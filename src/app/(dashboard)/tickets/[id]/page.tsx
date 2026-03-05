@@ -6,7 +6,6 @@ import Link from "next/link";
 import Badge from "@/components/Badge";
 import Breadcrumb from "@/components/Breadcrumb";
 import { DetailSkeleton } from "@/components/Skeleton";
-import { useFetch } from "@/lib/hooks";
 import { Send } from "lucide-react";
 
 interface Message {
@@ -39,35 +38,69 @@ const PRIORITIES = ["low", "medium", "high", "urgent"] as const;
 
 export default function TicketDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const { data: ticket, loading, setData: setTicket } = useFetch<TicketDetail>(`/api/tickets/${id}`);
+  const [ticket, setTicket] = useState<TicketDetail | null>(null);
+  const [loading, setLoading] = useState(true);
   const [reply, setReply] = useState("");
   const [sending, setSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let active = true;
+    setLoading(true);
+    fetch(`/api/tickets/${id}`)
+      .then((r) => r.json())
+      .then((d) => { if (active) setTicket(d); })
+      .catch(console.error)
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [id]);
+
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [ticket?.messages]);
+  }, [ticket?.messages?.length]);
 
   const handleSend = useCallback(async () => {
     if (!reply.trim() || sending) return;
+    const content = reply.trim();
     setSending(true);
+
+    // Optimistic update — show message immediately
+    const tempId = `temp-${Date.now()}`;
+    console.log("[handleSend] optimistic update, tempId:", tempId);
+    setTicket((t) => {
+      if (!t) return t;
+      const updated = { ...t, status: "open" as const, messages: [...t.messages, { id: tempId, content, sender: "admin", createdAt: new Date().toISOString() }] };
+      console.log("[handleSend] messages after optimistic:", updated.messages.length);
+      return updated;
+    });
+    setReply("");
+
     try {
       const res = await fetch(`/api/tickets/${id}/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: reply }),
+        body: JSON.stringify({ content }),
       });
+      console.log("[handleSend] POST response:", res.status, res.ok);
       if (res.ok) {
         const msg = await res.json();
-        setTicket((t) => t ? { ...t, status: "open", messages: [...t.messages, msg] } : t);
-        setReply("");
+        console.log("[handleSend] server msg:", msg);
+        // Replace temp message with real one
+        setTicket((t) => t ? { ...t, messages: t.messages.map((m) => m.id === tempId ? msg : m) } : t);
+      } else {
+        console.error("[handleSend] POST failed:", res.status, await res.text());
+        // Revert optimistic update on failure
+        setTicket((t) => t ? { ...t, messages: t.messages.filter((m) => m.id !== tempId) } : t);
+        setReply(content);
       }
     } catch (err) {
-      console.error("[ticket/send]", err);
+      console.error("[handleSend] error:", err);
+      setTicket((t) => t ? { ...t, messages: t.messages.filter((m) => m.id !== tempId) } : t);
+      setReply(content);
     } finally {
       setSending(false);
     }
-  }, [reply, sending, id, setTicket]);
+  }, [reply, sending, id]);
 
   const toggleStatus = useCallback(async () => {
     if (!ticket) return;
@@ -78,7 +111,7 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
       body: JSON.stringify({ status: newStatus }),
     });
     if (res.ok) setTicket((t) => t ? { ...t, status: newStatus } : t);
-  }, [ticket, id, setTicket]);
+  }, [ticket, id]);
 
   const changePriority = useCallback(async (priority: string) => {
     const res = await fetch(`/api/tickets/${id}`, {
@@ -87,7 +120,7 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
       body: JSON.stringify({ priority }),
     });
     if (res.ok) setTicket((t) => t ? { ...t, priority } : t);
-  }, [id, setTicket]);
+  }, [id]);
 
   if (loading) return <DetailSkeleton />;
   if (!ticket) return <div className="text-sm text-red-400 animate-in">Ticket not found</div>;
