@@ -62,3 +62,81 @@ export function useClickOutside(handler: () => void) {
   }, [handler]);
   return ref;
 }
+
+export function usePolling<T>({
+  url,
+  interval,
+  enabled = true,
+  onData,
+}: {
+  url: string | null;
+  interval: number;
+  enabled?: boolean;
+  onData?: (data: T) => void;
+}) {
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState(true);
+  const onDataRef = useRef(onData);
+  onDataRef.current = onData;
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const doFetch = useCallback(async () => {
+    if (!url) return;
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) return;
+      const json = await res.json();
+      if (onDataRef.current) {
+        onDataRef.current(json);
+      } else {
+        setData(json);
+      }
+    } catch {
+      // ignore polling errors
+    } finally {
+      setLoading(false);
+    }
+  }, [url]);
+
+  useEffect(() => {
+    if (!url || !enabled) {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    doFetch();
+
+    const start = () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      timerRef.current = setInterval(doFetch, interval);
+    };
+
+    const stop = () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+
+    start();
+
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") {
+        doFetch();
+        start();
+      } else {
+        stop();
+      }
+    };
+
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      stop();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [url, interval, enabled, doFetch]);
+
+  return { data, loading, refetch: doFetch };
+}

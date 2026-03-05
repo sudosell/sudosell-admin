@@ -86,6 +86,7 @@ model TicketMessage {
   createdAt DateTime @default(now())
 
   @@index([ticketId])
+  @@index([ticketId, createdAt])
 }
 
 model Product {

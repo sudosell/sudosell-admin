@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Badge from "@/components/Badge";
 import Pagination from "@/components/Pagination";
 import EmptyState from "@/components/EmptyState";
 import { TableSkeleton } from "@/components/Skeleton";
+import { usePolling } from "@/lib/hooks";
 
 interface Ticket {
   id: string;
@@ -26,20 +27,21 @@ export default function TicketsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [status, setStatus] = useState("all");
   const [priority, setPriority] = useState("all");
-  const [loading, setLoading] = useState(true);
+  const pollParams = new URLSearchParams({ page: String(page) });
+  if (status !== "all") pollParams.set("status", status);
+  if (priority !== "all") pollParams.set("priority", priority);
+  const pollUrl = `/api/tickets?${pollParams}`;
 
-  const fetchTickets = useCallback(() => {
-    setLoading(true);
-    const params = new URLSearchParams({ page: String(page) });
-    if (status !== "all") params.set("status", status);
-    if (priority !== "all") params.set("priority", priority);
-    fetch(`/api/tickets?${params}`)
-      .then((r) => r.json())
-      .then((data) => { setTickets(data.tickets); setTotalPages(data.totalPages); })
-      .finally(() => setLoading(false));
-  }, [page, status, priority]);
-
-  useEffect(() => { fetchTickets(); }, [fetchTickets]);
+  const { loading } = usePolling<{ tickets: Ticket[]; totalPages: number }>({
+    url: pollUrl,
+    interval: 10000,
+    onData: (data) => {
+      if (data.tickets) {
+        setTickets(data.tickets);
+        setTotalPages(data.totalPages);
+      }
+    },
+  });
 
   return (
     <div>

@@ -7,6 +7,7 @@ import Badge from "@/components/Badge";
 import Breadcrumb from "@/components/Breadcrumb";
 import { DetailSkeleton } from "@/components/Skeleton";
 import { Send } from "lucide-react";
+import { usePolling } from "@/lib/hooks";
 
 interface Message {
   id: string;
@@ -54,6 +55,42 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
   }, [id]);
+
+  // Incremental polling for new messages
+  const lastRealTimestamp = ticket?.messages
+    .filter((m) => !m.id.startsWith("temp-"))
+    .at(-1)?.createdAt ?? null;
+
+  const pollUrl = ticket && lastRealTimestamp
+    ? `/api/tickets/${id}/messages?after=${encodeURIComponent(lastRealTimestamp)}`
+    : null;
+
+  const handlePollData = useCallback((data: { messages: Message[]; status: string }) => {
+    if (!data.messages?.length && data.status === ticket?.status) return;
+    setTicket((prev) => {
+      if (!prev) return prev;
+      let msgs = [...prev.messages];
+      for (const incoming of data.messages) {
+        if (msgs.some((m) => m.id === incoming.id)) continue;
+        const tempIdx = msgs.findIndex(
+          (m) => m.id.startsWith("temp-") && m.content === incoming.content && m.sender === incoming.sender
+        );
+        if (tempIdx !== -1) {
+          msgs[tempIdx] = incoming;
+        } else {
+          msgs.push(incoming);
+        }
+      }
+      return { ...prev, messages: msgs, status: data.status };
+    });
+  }, [ticket?.status]);
+
+  usePolling<{ messages: Message[]; status: string }>({
+    url: pollUrl,
+    interval: 3000,
+    enabled: !!ticket && !loading,
+    onData: handlePollData,
+  });
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
