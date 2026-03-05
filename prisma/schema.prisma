@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  passwordHash  String?
+  image         String?
+  provider      String    @default("credentials") // "credentials" | "google" | "github"
+  providerId    String?
+  emailVerified  Boolean   @default(false)
+  verifyToken    String?
+  verifyTokenExp DateTime?
+  resetToken     String?
+  resetTokenExp  DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  purchases     Purchase[]
+  tickets       Ticket[]
+
+  @@index([email])
+  @@index([provider, providerId])
+}
+
+model Purchase {
+  id            String         @id @default(cuid())
+  userId        String
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  basketIdent   String         @unique
+  transactionId String?
+  status        String         @default("pending")
+  totalPrice    Float
+  currency      String
+  items         PurchaseItem[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([userId])
+  @@index([basketIdent])
+}
+
+model PurchaseItem {
+  id         String   @id @default(cuid())
+  purchaseId String
+  purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  packageId  Int
+  name       String
+  price      Float
+  image      String?
+
+  @@index([purchaseId])
+}
+
+model Ticket {
+  id        String          @id @default(cuid())
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject   String
+  status    String          @default("open")
+  messages  TicketMessage[]
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@index([userId])
+}
+
+model TicketMessage {
+  id        String   @id @default(cuid())
+  ticketId  String
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  content   String
+  sender    String
+  createdAt DateTime @default(now())
+
+  @@index([ticketId])
+}
+
+model Product {
+  id             String    @id @default(cuid())
+  tebexPackageId Int       @unique
+  name           String
+  releases       Release[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([tebexPackageId])
+}
+
+model Release {
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  version    String
+  patchNotes String?
+  fileKey    String
+  fileName   String
+  fileSize   Int?
+  createdAt  DateTime @default(now())
+
+  @@index([productId])
+}
+
+model ActivityLog {
+  id         String   @id @default(cuid())
+  action     String
+  actor      String
+  actorType  String
+  target     String?
+  targetType String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  @@index([action])
+  @@index([actor])
+  @@index([createdAt])
+}
