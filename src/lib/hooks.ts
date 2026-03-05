@@ -16,7 +16,17 @@ export function useFetch<T>(url: string | null) {
       .finally(() => setLoading(false));
   }, [url]);
 
-  useEffect(() => { refetch(); }, [refetch]);
+  useEffect(() => {
+    if (!url) return;
+    const controller = new AbortController();
+    setLoading(true);
+    fetch(url, { signal: controller.signal })
+      .then((r) => r.json())
+      .then(setData)
+      .catch((err) => { if (err.name !== "AbortError") console.error(err); })
+      .finally(() => setLoading(false));
+    return () => controller.abort();
+  }, [url]);
 
   return { data, loading, setData, refetch };
 }
