@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import { use } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Upload, Trash2, FileDown } from "lucide-react";
 import Modal from "@/components/Modal";
@@ -34,6 +35,7 @@ function formatSize(bytes: number | null) {
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const router = useRouter();
   const { data: product, loading, setData: setProduct } = useFetch<ProductDetail>(`/api/products/${id}`);
 
   const [version, setVersion] = useState("");
@@ -42,6 +44,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [showDeleteProduct, setShowDeleteProduct] = useState(false);
 
   const handleUpload = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,6 +77,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     setDeleteId(null);
   }, [deleteId, id, setProduct]);
 
+  const handleDeleteProduct = useCallback(async () => {
+    const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
+    if (res.ok) router.push("/products");
+  }, [id, router]);
+
   if (loading) return <DetailSkeleton />;
   if (!product) return <div className="text-sm text-red-400 animate-in">Product not found</div>;
 
@@ -82,9 +90,20 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
       <Link href="/products" className="text-sm text-[#9898ac] hover:text-white transition-colors duration-150 mb-4 inline-block">&larr; Back to Products</Link>
 
       <div className="rounded-2xl border border-white/[0.06] bg-[#0d0d12]/80 p-6 mb-6 animate-in">
-        <h2 className="text-xl font-bold text-white mb-1">{product.name}</h2>
-        <p className="text-sm text-[#9898ac]">Tebex Package ID: <span className="font-mono tabular-nums">{product.tebexPackageId}</span></p>
-        <p className="text-xs text-[#4a4a5a] mt-1">Created {new Date(product.createdAt).toLocaleDateString()}</p>
+        <div className="flex items-start justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-white mb-1">{product.name}</h2>
+            <p className="text-sm text-[#9898ac]">Tebex Package ID: <span className="font-mono tabular-nums">{product.tebexPackageId}</span></p>
+            <p className="text-xs text-[#4a4a5a] mt-1">Created {new Date(product.createdAt).toLocaleDateString()}</p>
+          </div>
+          <button
+            onClick={() => setShowDeleteProduct(true)}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-all duration-150"
+          >
+            <Trash2 size={14} />
+            Delete Product
+          </button>
+        </div>
       </div>
 
       <div className="rounded-2xl border border-white/[0.06] bg-[#0d0d12]/80 p-5 mb-6 animate-in" style={{ animationDelay: "50ms" }}>
@@ -177,6 +196,20 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         }
       >
         <p>Are you sure you want to delete this release? This will also remove the file from storage.</p>
+      </Modal>
+
+      <Modal
+        open={showDeleteProduct}
+        onClose={() => setShowDeleteProduct(false)}
+        title="Delete Product"
+        actions={
+          <>
+            <button onClick={() => setShowDeleteProduct(false)} className="px-4 py-2 rounded-lg text-sm text-[#9898ac] hover:text-white transition-colors duration-150">Cancel</button>
+            <button onClick={handleDeleteProduct} className="px-4 py-2 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-colors duration-150">Delete</button>
+          </>
+        }
+      >
+        <p>Are you sure you want to delete <strong className="text-white">{product.name}</strong>? This will also delete all releases. This action cannot be undone.</p>
       </Modal>
     </div>
   );
