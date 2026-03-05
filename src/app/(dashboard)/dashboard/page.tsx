@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Users, DollarSign, ShoppingCart, MessageSquare, Package } from "lucide-react";
+import { Users, DollarSign, ShoppingCart, MessageSquare, Package, TrendingUp, Repeat, BarChart3 } from "lucide-react";
 import StatsCard from "@/components/StatsCard";
 import ActivityItem from "@/components/ActivityItem";
 import RevenueChart from "@/components/RevenueChart";
@@ -31,12 +31,21 @@ interface ChartData {
   topProducts: Array<{ name: string; revenue: number; count: number }>;
 }
 
+interface Analytics {
+  repeatBuyerRate: number;
+  averageOrderValue: number;
+  revenueByProduct: Array<{ packageId: number; name: string; revenue: number; count: number }>;
+  ticketsPerProduct: Array<{ packageId: number; name: string; tickets: number }>;
+  topBuyers: Array<{ name: string; email: string; total: number }>;
+}
+
 const periods = ["daily", "weekly", "monthly"] as const;
 
 export default function DashboardPage() {
   const { data: stats, loading } = useFetch<Stats>("/api/stats");
   const [period, setPeriod] = useState<string>("daily");
   const { data: charts, loading: chartsLoading } = useFetch<ChartData>(`/api/charts?period=${period}`);
+  const { data: analytics, loading: analyticsLoading } = useFetch<Analytics>("/api/analytics");
 
   return (
     <div>
@@ -78,6 +87,95 @@ export default function DashboardPage() {
               userGrowth={charts.userGrowth}
               topProducts={charts.topProducts}
             />
+          )}
+
+          {/* Insights */}
+          {analyticsLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+              <CardSkeleton /><CardSkeleton />
+            </div>
+          ) : analytics && (
+            <div className="mb-6 space-y-4">
+              <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                <BarChart3 size={16} className="text-[#b249f8]" />
+                Insights
+              </h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <StatsCard label="Repeat Buyer Rate" value={`${analytics.repeatBuyerRate}%`} icon={Repeat} />
+                <StatsCard label="Avg Order Value" value={`$${analytics.averageOrderValue.toFixed(2)}`} icon={TrendingUp} />
+              </div>
+
+              {analytics.revenueByProduct.length > 0 && (
+                <div className="rounded-2xl border border-white/[0.06] bg-[#0d0d12]/80 p-5">
+                  <h4 className="text-xs font-semibold text-[#9898ac] uppercase tracking-wider mb-3">Revenue by Product</h4>
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-[#5a5a6e] text-xs">
+                        <th className="pb-2 font-medium">Product</th>
+                        <th className="pb-2 font-medium text-right">Revenue</th>
+                        <th className="pb-2 font-medium text-right">Units</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {analytics.revenueByProduct.map((p) => (
+                        <tr key={p.packageId} className="border-t border-white/[0.04]">
+                          <td className="py-2 text-white/90">{p.name}</td>
+                          <td className="py-2 text-right text-emerald-400 font-medium">${p.revenue.toFixed(2)}</td>
+                          <td className="py-2 text-right text-[#9898ac]">{p.count}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {analytics.ticketsPerProduct.length > 0 && (
+                <div className="rounded-2xl border border-white/[0.06] bg-[#0d0d12]/80 p-5">
+                  <h4 className="text-xs font-semibold text-[#9898ac] uppercase tracking-wider mb-3">Tickets per Product</h4>
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-[#5a5a6e] text-xs">
+                        <th className="pb-2 font-medium">Product</th>
+                        <th className="pb-2 font-medium text-right">Tickets</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {analytics.ticketsPerProduct.map((p) => (
+                        <tr key={p.packageId} className="border-t border-white/[0.04]">
+                          <td className="py-2 text-white/90">{p.name}</td>
+                          <td className="py-2 text-right text-[#9898ac]">{p.tickets}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {analytics.topBuyers.length > 0 && (
+                <div className="rounded-2xl border border-white/[0.06] bg-[#0d0d12]/80 p-5">
+                  <h4 className="text-xs font-semibold text-[#9898ac] uppercase tracking-wider mb-3">Top Buyers</h4>
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-[#5a5a6e] text-xs">
+                        <th className="pb-2 font-medium">Name</th>
+                        <th className="pb-2 font-medium">Email</th>
+                        <th className="pb-2 font-medium text-right">Total Spent</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {analytics.topBuyers.map((b, i) => (
+                        <tr key={i} className="border-t border-white/[0.04]">
+                          <td className="py-2 text-white/90">{b.name}</td>
+                          <td className="py-2 text-[#9898ac]">{b.email}</td>
+                          <td className="py-2 text-right text-emerald-400 font-medium">${b.total.toFixed(2)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           )}
 
           <div className="rounded-2xl border border-white/[0.06] bg-[#0d0d12]/80 p-5 animate-in">

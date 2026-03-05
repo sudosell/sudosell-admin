@@ -393,7 +393,8 @@ export const ModelName = {
   Release: 'Release',
   ActivityLog: 'ActivityLog',
   AdminNotification: 'AdminNotification',
-  Announcement: 'Announcement'
+  Announcement: 'Announcement',
+  Webhook: 'Webhook'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -409,7 +410,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "purchase" | "purchaseItem" | "ticket" | "ticketMessage" | "product" | "release" | "activityLog" | "adminNotification" | "announcement"
+    modelProps: "user" | "purchase" | "purchaseItem" | "ticket" | "ticketMessage" | "product" | "release" | "activityLog" | "adminNotification" | "announcement" | "webhook"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1153,6 +1154,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Webhook: {
+      payload: Prisma.$WebhookPayload<ExtArgs>
+      fields: Prisma.WebhookFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WebhookFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WebhookFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload>
+        }
+        findFirst: {
+          args: Prisma.WebhookFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WebhookFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload>
+        }
+        findMany: {
+          args: Prisma.WebhookFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload>[]
+        }
+        create: {
+          args: Prisma.WebhookCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload>
+        }
+        createMany: {
+          args: Prisma.WebhookCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WebhookCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload>[]
+        }
+        delete: {
+          args: Prisma.WebhookDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload>
+        }
+        update: {
+          args: Prisma.WebhookUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload>
+        }
+        deleteMany: {
+          args: Prisma.WebhookDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WebhookUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WebhookUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload>[]
+        }
+        upsert: {
+          args: Prisma.WebhookUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload>
+        }
+        aggregate: {
+          args: Prisma.WebhookAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWebhook>
+        }
+        groupBy: {
+          args: Prisma.WebhookGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WebhookGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WebhookCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WebhookCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1330,6 +1405,19 @@ export const AnnouncementScalarFieldEnum = {
 } as const
 
 export type AnnouncementScalarFieldEnum = (typeof AnnouncementScalarFieldEnum)[keyof typeof AnnouncementScalarFieldEnum]
+
+
+export const WebhookScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  packageId: 'packageId',
+  url: 'url',
+  secret: 'secret',
+  active: 'active',
+  createdAt: 'createdAt'
+} as const
+
+export type WebhookScalarFieldEnum = (typeof WebhookScalarFieldEnum)[keyof typeof WebhookScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1560,6 +1648,7 @@ export type GlobalOmitConfig = {
   activityLog?: Prisma.ActivityLogOmit
   adminNotification?: Prisma.AdminNotificationOmit
   announcement?: Prisma.AnnouncementOmit
+  webhook?: Prisma.WebhookOmit
 }
 
 /* Types for Logging */

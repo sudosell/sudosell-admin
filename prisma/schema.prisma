@@ -27,6 +27,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   purchases     Purchase[]
   tickets       Ticket[]
+  webhooks      Webhook[]
 
   @@index([email])
   @@index([provider, providerId])
@@ -151,4 +152,18 @@ model Announcement {
   createdAt DateTime @default(now())
 
   @@index([active])
+}
+
+model Webhook {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  packageId Int
+  url       String
+  secret    String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([packageId])
 }

@@ -60,7 +60,8 @@ export const ModelName = {
   Release: 'Release',
   ActivityLog: 'ActivityLog',
   AdminNotification: 'AdminNotification',
-  Announcement: 'Announcement'
+  Announcement: 'Announcement',
+  Webhook: 'Webhook'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -217,6 +218,19 @@ export const AnnouncementScalarFieldEnum = {
 } as const
 
 export type AnnouncementScalarFieldEnum = (typeof AnnouncementScalarFieldEnum)[keyof typeof AnnouncementScalarFieldEnum]
+
+
+export const WebhookScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  packageId: 'packageId',
+  url: 'url',
+  secret: 'secret',
+  active: 'active',
+  createdAt: 'createdAt'
+} as const
+
+export type WebhookScalarFieldEnum = (typeof WebhookScalarFieldEnum)[keyof typeof WebhookScalarFieldEnum]
 
 
 export const SortOrder = {

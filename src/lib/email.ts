@@ -70,6 +70,46 @@ export async function sendTicketTranscriptEmail(
   });
 }
 
+export async function sendNewReleaseEmail(
+  to: string,
+  name: string,
+  productName: string,
+  version: string,
+  patchNotes: string | null,
+  dashboardUrl: string,
+) {
+  const notesHtml = patchNotes
+    ? `<div style="background:#111118;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:16px;margin:0 0 24px">
+        <p style="margin:0 0 6px;font-size:12px;font-weight:600;color:#5a5a6e;text-transform:uppercase;letter-spacing:0.05em">What&rsquo;s New</p>
+        <p style="margin:0;font-size:13px;color:#d0d0e0;line-height:1.6;white-space:pre-wrap">${patchNotes}</p>
+      </div>`
+    : "";
+
+  await transporter.sendMail({
+    from: FROM,
+    to,
+    subject: `${productName} v${version} Released — SudoSell`,
+    html: `
+      <div style="background:#08080d;padding:40px 20px;font-family:system-ui,sans-serif">
+        <div style="max-width:480px;margin:0 auto;background:#0d0d12;border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden">
+          <div style="height:3px;background:linear-gradient(90deg,#b249f8,#f649a7,#b249f8)"></div>
+          <div style="padding:32px">
+            <h2 style="color:#fff;font-size:18px;margin:0 0 8px">New Release Available</h2>
+            <p style="color:#9898ac;font-size:14px;line-height:1.6;margin:0 0 24px">
+              Hi ${name}, <strong style="color:#fff">${productName}</strong> has been updated to <strong style="color:#b249f8">v${version}</strong>.
+            </p>
+            ${notesHtml}
+            <a href="${dashboardUrl}" style="display:inline-block;background:#b249f8;color:#fff;text-decoration:none;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:500">
+              Download Update
+            </a>
+            <p style="color:#4a4a5a;font-size:12px;margin:24px 0 0">SudoSell &mdash; Your digital marketplace</p>
+          </div>
+        </div>
+      </div>
+    `,
+  });
+}
+
 export async function sendTicketReplyNotification(
   to: string,
   name: string,
