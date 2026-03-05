@@ -51,17 +51,22 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
   const handleSend = useCallback(async () => {
     if (!reply.trim() || sending) return;
     setSending(true);
-    const res = await fetch(`/api/tickets/${id}/messages`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: reply }),
-    });
-    if (res.ok) {
-      const msg = await res.json();
-      setTicket((t) => t ? { ...t, status: "open", messages: [...t.messages, msg] } : t);
-      setReply("");
+    try {
+      const res = await fetch(`/api/tickets/${id}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: reply }),
+      });
+      if (res.ok) {
+        const msg = await res.json();
+        setTicket((t) => t ? { ...t, status: "open", messages: [...t.messages, msg] } : t);
+        setReply("");
+      }
+    } catch (err) {
+      console.error("[ticket/send]", err);
+    } finally {
+      setSending(false);
     }
-    setSending(false);
   }, [reply, sending, id, setTicket]);
 
   const toggleStatus = useCallback(async () => {

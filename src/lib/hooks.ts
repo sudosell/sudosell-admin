@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 export function useFetch<T>(url: string | null) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
+  const loadedUrlRef = useRef<string | null>(null);
 
   const refetch = useCallback(() => {
     if (!url) return;
@@ -18,14 +19,18 @@ export function useFetch<T>(url: string | null) {
 
   useEffect(() => {
     if (!url) return;
-    const controller = new AbortController();
+    if (loadedUrlRef.current === url) {
+      setLoading(false);
+      return;
+    }
+    let active = true;
     setLoading(true);
-    fetch(url, { signal: controller.signal })
+    fetch(url)
       .then((r) => r.json())
-      .then(setData)
-      .catch((err) => { if (err.name !== "AbortError") console.error(err); })
-      .finally(() => setLoading(false));
-    return () => controller.abort();
+      .then((d) => { if (active) { setData(d); loadedUrlRef.current = url; } })
+      .catch(console.error)
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
   }, [url]);
 
   return { data, loading, setData, refetch };
