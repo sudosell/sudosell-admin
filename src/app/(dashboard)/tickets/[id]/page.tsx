@@ -66,13 +66,7 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
 
     // Optimistic update — show message immediately
     const tempId = `temp-${Date.now()}`;
-    console.log("[handleSend] optimistic update, tempId:", tempId);
-    setTicket((t) => {
-      if (!t) return t;
-      const updated = { ...t, status: "open" as const, messages: [...t.messages, { id: tempId, content, sender: "admin", createdAt: new Date().toISOString() }] };
-      console.log("[handleSend] messages after optimistic:", updated.messages.length);
-      return updated;
-    });
+    setTicket((t) => t ? { ...t, status: "open", messages: [...t.messages, { id: tempId, content, sender: "admin", createdAt: new Date().toISOString() }] } : t);
     setReply("");
 
     try {
@@ -81,20 +75,15 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content }),
       });
-      console.log("[handleSend] POST response:", res.status, res.ok);
       if (res.ok) {
         const msg = await res.json();
-        console.log("[handleSend] server msg:", msg);
-        // Replace temp message with real one
         setTicket((t) => t ? { ...t, messages: t.messages.map((m) => m.id === tempId ? msg : m) } : t);
       } else {
-        console.error("[handleSend] POST failed:", res.status, await res.text());
-        // Revert optimistic update on failure
         setTicket((t) => t ? { ...t, messages: t.messages.filter((m) => m.id !== tempId) } : t);
         setReply(content);
       }
     } catch (err) {
-      console.error("[handleSend] error:", err);
+      console.error("[ticket/send]", err);
       setTicket((t) => t ? { ...t, messages: t.messages.filter((m) => m.id !== tempId) } : t);
       setReply(content);
     } finally {
@@ -162,15 +151,14 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
 
       <div className="rounded-2xl border border-white/[0.06] bg-[#0d0d12]/80 p-5 mb-4 animate-in" style={{ animationDelay: "50ms" }}>
         <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
-          {ticket.messages.map((msg, i) => (
+          {ticket.messages.map((msg) => (
             <div
               key={msg.id}
-              className={`p-4 rounded-xl animate-in ${
+              className={`p-4 rounded-xl ${
                 msg.sender === "admin"
                   ? "bg-[#b249f8]/5 border border-[#b249f8]/10 ml-8"
                   : "bg-white/[0.02] border border-white/[0.04] mr-8"
               }`}
-              style={{ animationDelay: `${i * 40}ms` }}
             >
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs font-medium text-white">{msg.sender === "admin" ? "Admin" : ticket.user.name}</span>
