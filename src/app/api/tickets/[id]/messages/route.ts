@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-log";
+import { sendTicketReplyNotification } from "@/lib/email";
 
 export async function POST(
   req: NextRequest,
@@ -16,7 +17,7 @@ export async function POST(
       return NextResponse.json({ error: "Message content is required" }, { status: 400 });
     }
 
-    const ticket = await prisma.ticket.findUnique({ where: { id } });
+    const ticket = await prisma.ticket.findUnique({ where: { id }, include: { user: { select: { name: true, email: true } } } });
     if (!ticket) {
       return NextResponse.json({ error: "Ticket not found" }, { status: 404 });
     }
@@ -45,6 +46,9 @@ export async function POST(
         targetType: "ticket",
       });
     }
+
+    // Fire-and-forget email notification
+    sendTicketReplyNotification(ticket.user.email, ticket.user.name, ticket.subject, id).catch((err) => console.error("[email]", err));
 
     return NextResponse.json(message, { status: 201 });
   } catch (err) {

@@ -3,9 +3,9 @@
 import { useState, useRef, useCallback } from "react";
 import { use } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { Upload, Trash2, FileDown } from "lucide-react";
+import { Upload, Trash2, FileDown, Pencil } from "lucide-react";
 import Modal from "@/components/Modal";
+import Breadcrumb from "@/components/Breadcrumb";
 import { DetailSkeleton } from "@/components/Skeleton";
 import { useFetch } from "@/lib/hooks";
 
@@ -21,6 +21,8 @@ interface Release {
 interface ProductDetail {
   id: string;
   name: string;
+  description: string | null;
+  imageUrl: string | null;
   tebexPackageId: number;
   createdAt: string;
   releases: Release[];
@@ -46,16 +48,44 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showDeleteProduct, setShowDeleteProduct] = useState(false);
 
+  const [editing, setEditing] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editImageUrl, setEditImageUrl] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const startEditing = useCallback(() => {
+    if (!product) return;
+    setEditName(product.name);
+    setEditDescription(product.description ?? "");
+    setEditImageUrl(product.imageUrl ?? "");
+    setEditing(true);
+  }, [product]);
+
+  const saveEdit = useCallback(async () => {
+    if (!product || saving) return;
+    setSaving(true);
+    const res = await fetch(`/api/products/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: editName, description: editDescription, imageUrl: editImageUrl }),
+    });
+    if (res.ok) {
+      const updated = await res.json();
+      setProduct((p) => p ? { ...p, ...updated } : p);
+      setEditing(false);
+    }
+    setSaving(false);
+  }, [product, id, editName, editDescription, editImageUrl, saving, setProduct]);
+
   const handleUpload = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file || !version.trim()) return;
     setUploading(true);
-
     const formData = new FormData();
     formData.set("version", version);
     formData.set("patchNotes", patchNotes);
     formData.set("file", file);
-
     const res = await fetch(`/api/products/${id}/releases`, { method: "POST", body: formData });
     if (res.ok) {
       const release = await res.json();
@@ -71,9 +101,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const handleDelete = useCallback(async () => {
     if (!deleteId) return;
     const res = await fetch(`/api/products/${id}/releases/${deleteId}`, { method: "DELETE" });
-    if (res.ok) {
-      setProduct((p) => p ? { ...p, releases: p.releases.filter((r) => r.id !== deleteId) } : p);
-    }
+    if (res.ok) setProduct((p) => p ? { ...p, releases: p.releases.filter((r) => r.id !== deleteId) } : p);
     setDeleteId(null);
   }, [deleteId, id, setProduct]);
 
@@ -87,69 +115,67 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
   return (
     <div>
-      <Link href="/products" className="text-sm text-[#9898ac] hover:text-white transition-colors duration-150 mb-4 inline-block">&larr; Back to Products</Link>
+      <Breadcrumb items={[{ label: "Products", href: "/products" }, { label: product.name }]} />
 
       <div className="rounded-2xl border border-white/[0.06] bg-[#0d0d12]/80 p-6 mb-6 animate-in">
-        <div className="flex items-start justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-white mb-1">{product.name}</h2>
-            <p className="text-sm text-[#9898ac]">Tebex Package ID: <span className="font-mono tabular-nums">{product.tebexPackageId}</span></p>
-            <p className="text-xs text-[#4a4a5a] mt-1">Created {new Date(product.createdAt).toLocaleDateString()}</p>
+        {editing ? (
+          <div className="space-y-3">
+            <div>
+              <label className="block text-xs text-[#9898ac] mb-1">Name</label>
+              <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-white/[0.06] bg-[#08080d] text-sm text-white focus:outline-none focus:border-[#b249f8]/30 transition-colors" />
+            </div>
+            <div>
+              <label className="block text-xs text-[#9898ac] mb-1">Description</label>
+              <textarea value={editDescription} onChange={(e) => setEditDescription(e.target.value)} rows={3} className="w-full px-3 py-2 rounded-lg border border-white/[0.06] bg-[#08080d] text-sm text-white resize-none focus:outline-none focus:border-[#b249f8]/30 transition-colors" />
+            </div>
+            <div>
+              <label className="block text-xs text-[#9898ac] mb-1">Image URL</label>
+              <input type="url" value={editImageUrl} onChange={(e) => setEditImageUrl(e.target.value)} placeholder="https://..." className="w-full px-3 py-2 rounded-lg border border-white/[0.06] bg-[#08080d] text-sm text-white focus:outline-none focus:border-[#b249f8]/30 transition-colors" />
+            </div>
+            <div className="flex gap-2">
+              <button onClick={saveEdit} disabled={saving} className="px-4 py-2 rounded-lg text-sm font-medium bg-[#b249f8] text-white hover:bg-[#9333ea] disabled:opacity-50 transition-all duration-150">{saving ? "Saving..." : "Save"}</button>
+              <button onClick={() => setEditing(false)} className="px-4 py-2 rounded-lg text-sm text-[#9898ac] hover:text-white transition-colors">Cancel</button>
+            </div>
           </div>
-          <button
-            onClick={() => setShowDeleteProduct(true)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-all duration-150"
-          >
-            <Trash2 size={14} />
-            Delete Product
-          </button>
-        </div>
+        ) : (
+          <div className="flex items-start justify-between">
+            <div className="flex gap-4">
+              {product.imageUrl && (
+                <img src={product.imageUrl} alt={product.name} className="w-16 h-16 rounded-xl object-cover border border-white/[0.06]" />
+              )}
+              <div>
+                <h2 className="text-xl font-bold text-white mb-1">{product.name}</h2>
+                {product.description && <p className="text-sm text-[#9898ac] mb-2">{product.description}</p>}
+                <p className="text-sm text-[#9898ac]">Tebex Package ID: <span className="font-mono tabular-nums">{product.tebexPackageId}</span></p>
+                <p className="text-xs text-[#4a4a5a] mt-1">Created {new Date(product.createdAt).toLocaleDateString()}</p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button onClick={startEditing} className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium border border-white/[0.06] text-[#9898ac] hover:text-white hover:bg-white/[0.04] transition-all duration-150"><Pencil size={14} />Edit</button>
+              <button onClick={() => setShowDeleteProduct(true)} className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-all duration-150"><Trash2 size={14} />Delete</button>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="rounded-2xl border border-white/[0.06] bg-[#0d0d12]/80 p-5 mb-6 animate-in" style={{ animationDelay: "50ms" }}>
-        <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-          <Upload size={16} /> Upload Release
-        </h3>
+        <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2"><Upload size={16} /> Upload Release</h3>
         <form onSubmit={handleUpload} className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs text-[#9898ac] mb-1">Version</label>
-              <input
-                type="text"
-                value={version}
-                onChange={(e) => setVersion(e.target.value)}
-                placeholder="1.0.0"
-                required
-                className="w-full px-3 py-2 rounded-lg border border-white/[0.06] bg-[#08080d] text-sm text-white placeholder-[#4a4a5a] focus:outline-none focus:border-[#b249f8]/30 transition-colors duration-150"
-              />
+              <input type="text" value={version} onChange={(e) => setVersion(e.target.value)} placeholder="1.0.0" required className="w-full px-3 py-2 rounded-lg border border-white/[0.06] bg-[#08080d] text-sm text-white placeholder-[#4a4a5a] focus:outline-none focus:border-[#b249f8]/30 transition-colors" />
             </div>
             <div>
               <label className="block text-xs text-[#9898ac] mb-1">File</label>
-              <input
-                ref={fileRef}
-                type="file"
-                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                required
-                className="w-full px-3 py-1.5 rounded-lg border border-white/[0.06] bg-[#08080d] text-sm text-[#9898ac] file:mr-3 file:border-0 file:bg-[#b249f8]/10 file:text-[#b249f8] file:rounded file:px-2 file:py-1 file:text-xs file:font-medium file:cursor-pointer"
-              />
+              <input ref={fileRef} type="file" onChange={(e) => setFile(e.target.files?.[0] ?? null)} required className="w-full px-3 py-1.5 rounded-lg border border-white/[0.06] bg-[#08080d] text-sm text-[#9898ac] file:mr-3 file:border-0 file:bg-[#b249f8]/10 file:text-[#b249f8] file:rounded file:px-2 file:py-1 file:text-xs file:font-medium file:cursor-pointer" />
             </div>
           </div>
           <div>
             <label className="block text-xs text-[#9898ac] mb-1">Patch Notes (optional)</label>
-            <textarea
-              value={patchNotes}
-              onChange={(e) => setPatchNotes(e.target.value)}
-              rows={2}
-              className="w-full px-3 py-2 rounded-lg border border-white/[0.06] bg-[#08080d] text-sm text-white placeholder-[#4a4a5a] resize-none focus:outline-none focus:border-[#b249f8]/30 transition-colors duration-150"
-            />
+            <textarea value={patchNotes} onChange={(e) => setPatchNotes(e.target.value)} rows={2} className="w-full px-3 py-2 rounded-lg border border-white/[0.06] bg-[#08080d] text-sm text-white resize-none focus:outline-none focus:border-[#b249f8]/30 transition-colors" />
           </div>
-          <button
-            type="submit"
-            disabled={uploading}
-            className="px-4 py-2 rounded-lg text-sm font-medium bg-[#b249f8] text-white hover:bg-[#9333ea] disabled:opacity-50 transition-all duration-150"
-          >
-            {uploading ? "Uploading..." : "Upload"}
-          </button>
+          <button type="submit" disabled={uploading} className="px-4 py-2 rounded-lg text-sm font-medium bg-[#b249f8] text-white hover:bg-[#9333ea] disabled:opacity-50 transition-all duration-150">{uploading ? "Uploading..." : "Upload"}</button>
         </form>
       </div>
 
@@ -172,43 +198,17 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                   </div>
                   {r.patchNotes && <p className="text-xs text-[#4a4a5a] mt-1">{r.patchNotes}</p>}
                 </div>
-                <button
-                  onClick={() => setDeleteId(r.id)}
-                  className="p-2 rounded-lg text-[#9898ac] hover:text-red-400 hover:bg-red-500/10 transition-all duration-150"
-                >
-                  <Trash2 size={14} />
-                </button>
+                <button onClick={() => setDeleteId(r.id)} className="p-2 rounded-lg text-[#9898ac] hover:text-red-400 hover:bg-red-500/10 transition-all duration-150"><Trash2 size={14} /></button>
               </div>
             ))}
           </div>
         )}
       </div>
 
-      <Modal
-        open={!!deleteId}
-        onClose={() => setDeleteId(null)}
-        title="Delete Release"
-        actions={
-          <>
-            <button onClick={() => setDeleteId(null)} className="px-4 py-2 rounded-lg text-sm text-[#9898ac] hover:text-white transition-colors duration-150">Cancel</button>
-            <button onClick={handleDelete} className="px-4 py-2 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-colors duration-150">Delete</button>
-          </>
-        }
-      >
+      <Modal open={!!deleteId} onClose={() => setDeleteId(null)} title="Delete Release" actions={<><button onClick={() => setDeleteId(null)} className="px-4 py-2 rounded-lg text-sm text-[#9898ac] hover:text-white transition-colors">Cancel</button><button onClick={handleDelete} className="px-4 py-2 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-colors">Delete</button></>}>
         <p>Are you sure you want to delete this release? This will also remove the file from storage.</p>
       </Modal>
-
-      <Modal
-        open={showDeleteProduct}
-        onClose={() => setShowDeleteProduct(false)}
-        title="Delete Product"
-        actions={
-          <>
-            <button onClick={() => setShowDeleteProduct(false)} className="px-4 py-2 rounded-lg text-sm text-[#9898ac] hover:text-white transition-colors duration-150">Cancel</button>
-            <button onClick={handleDeleteProduct} className="px-4 py-2 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-colors duration-150">Delete</button>
-          </>
-        }
-      >
+      <Modal open={showDeleteProduct} onClose={() => setShowDeleteProduct(false)} title="Delete Product" actions={<><button onClick={() => setShowDeleteProduct(false)} className="px-4 py-2 rounded-lg text-sm text-[#9898ac] hover:text-white transition-colors">Cancel</button><button onClick={handleDeleteProduct} className="px-4 py-2 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-colors">Delete</button></>}>
         <p>Are you sure you want to delete <strong className="text-white">{product.name}</strong>? This will also delete all releases. This action cannot be undone.</p>
       </Modal>
     </div>

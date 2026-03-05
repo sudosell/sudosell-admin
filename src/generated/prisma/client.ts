@@ -81,3 +81,13 @@ export type Release = Prisma.ReleaseModel
  * 
  */
 export type ActivityLog = Prisma.ActivityLogModel
+/**
+ * Model AdminNotification
+ * 
+ */
+export type AdminNotification = Prisma.AdminNotificationModel
+/**
+ * Model Announcement
+ * 
+ */
+export type Announcement = Prisma.AnnouncementModel

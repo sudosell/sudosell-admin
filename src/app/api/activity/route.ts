@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { Prisma } from "@/generated/prisma/client";
+import { resolveActors } from "@/lib/resolve-actors";
 
 export async function GET(req: NextRequest) {
   try {
@@ -21,7 +22,7 @@ export async function GET(req: NextRequest) {
       if (before) where.createdAt.lte = new Date(before);
     }
 
-    const [logs, total] = await Promise.all([
+    const [rawLogs, total] = await Promise.all([
       prisma.activityLog.findMany({
         where,
         orderBy: { createdAt: "desc" },
@@ -30,6 +31,8 @@ export async function GET(req: NextRequest) {
       }),
       prisma.activityLog.count({ where }),
     ]);
+
+    const logs = await resolveActors(rawLogs);
 
     return NextResponse.json({ logs, total, page, totalPages: Math.ceil(total / limit) });
   } catch (err) {

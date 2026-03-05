@@ -38,6 +38,8 @@ export type ProductMinAggregateOutputType = {
   id: string | null
   tebexPackageId: number | null
   name: string | null
+  description: string | null
+  imageUrl: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -46,6 +48,8 @@ export type ProductMaxAggregateOutputType = {
   id: string | null
   tebexPackageId: number | null
   name: string | null
+  description: string | null
+  imageUrl: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -54,6 +58,8 @@ export type ProductCountAggregateOutputType = {
   id: number
   tebexPackageId: number
   name: number
+  description: number
+  imageUrl: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -72,6 +78,8 @@ export type ProductMinAggregateInputType = {
   id?: true
   tebexPackageId?: true
   name?: true
+  description?: true
+  imageUrl?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -80,6 +88,8 @@ export type ProductMaxAggregateInputType = {
   id?: true
   tebexPackageId?: true
   name?: true
+  description?: true
+  imageUrl?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -88,6 +98,8 @@ export type ProductCountAggregateInputType = {
   id?: true
   tebexPackageId?: true
   name?: true
+  description?: true
+  imageUrl?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -183,6 +195,8 @@ export type ProductGroupByOutputType = {
   id: string
   tebexPackageId: number
   name: string
+  description: string | null
+  imageUrl: string | null
   createdAt: Date
   updatedAt: Date
   _count: ProductCountAggregateOutputType | null
@@ -214,6 +228,8 @@ export type ProductWhereInput = {
   id?: Prisma.StringFilter<"Product"> | string
   tebexPackageId?: Prisma.IntFilter<"Product"> | number
   name?: Prisma.StringFilter<"Product"> | string
+  description?: Prisma.StringNullableFilter<"Product"> | string | null
+  imageUrl?: Prisma.StringNullableFilter<"Product"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   releases?: Prisma.ReleaseListRelationFilter
@@ -223,6 +239,8 @@ export type ProductOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   tebexPackageId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
+  imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   releases?: Prisma.ReleaseOrderByRelationAggregateInput
@@ -235,6 +253,8 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ProductWhereInput[]
   NOT?: Prisma.ProductWhereInput | Prisma.ProductWhereInput[]
   name?: Prisma.StringFilter<"Product"> | string
+  description?: Prisma.StringNullableFilter<"Product"> | string | null
+  imageUrl?: Prisma.StringNullableFilter<"Product"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   releases?: Prisma.ReleaseListRelationFilter
@@ -244,6 +264,8 @@ export type ProductOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   tebexPackageId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
+  imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ProductCountOrderByAggregateInput
@@ -260,6 +282,8 @@ export type ProductScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Product"> | string
   tebexPackageId?: Prisma.IntWithAggregatesFilter<"Product"> | number
   name?: Prisma.StringWithAggregatesFilter<"Product"> | string
+  description?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
+  imageUrl?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Product"> | Date | string
 }
@@ -268,6 +292,8 @@ export type ProductCreateInput = {
   id?: string
   tebexPackageId: number
   name: string
+  description?: string | null
+  imageUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   releases?: Prisma.ReleaseCreateNestedManyWithoutProductInput
@@ -277,6 +303,8 @@ export type ProductUncheckedCreateInput = {
   id?: string
   tebexPackageId: number
   name: string
+  description?: string | null
+  imageUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   releases?: Prisma.ReleaseUncheckedCreateNestedManyWithoutProductInput
@@ -286,6 +314,8 @@ export type ProductUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tebexPackageId?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   releases?: Prisma.ReleaseUpdateManyWithoutProductNestedInput
@@ -295,6 +325,8 @@ export type ProductUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tebexPackageId?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   releases?: Prisma.ReleaseUncheckedUpdateManyWithoutProductNestedInput
@@ -304,6 +336,8 @@ export type ProductCreateManyInput = {
   id?: string
   tebexPackageId: number
   name: string
+  description?: string | null
+  imageUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -312,6 +346,8 @@ export type ProductUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tebexPackageId?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -320,6 +356,8 @@ export type ProductUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tebexPackageId?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -328,6 +366,8 @@ export type ProductCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tebexPackageId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -340,6 +380,8 @@ export type ProductMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tebexPackageId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -348,6 +390,8 @@ export type ProductMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tebexPackageId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -379,6 +423,8 @@ export type ProductCreateWithoutReleasesInput = {
   id?: string
   tebexPackageId: number
   name: string
+  description?: string | null
+  imageUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -387,6 +433,8 @@ export type ProductUncheckedCreateWithoutReleasesInput = {
   id?: string
   tebexPackageId: number
   name: string
+  description?: string | null
+  imageUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -411,6 +459,8 @@ export type ProductUpdateWithoutReleasesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tebexPackageId?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -419,6 +469,8 @@ export type ProductUncheckedUpdateWithoutReleasesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tebexPackageId?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -458,6 +510,8 @@ export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   id?: boolean
   tebexPackageId?: boolean
   name?: boolean
+  description?: boolean
+  imageUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   releases?: boolean | Prisma.Product$releasesArgs<ExtArgs>
@@ -468,6 +522,8 @@ export type ProductSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   tebexPackageId?: boolean
   name?: boolean
+  description?: boolean
+  imageUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["product"]>
@@ -476,6 +532,8 @@ export type ProductSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   tebexPackageId?: boolean
   name?: boolean
+  description?: boolean
+  imageUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["product"]>
@@ -484,11 +542,13 @@ export type ProductSelectScalar = {
   id?: boolean
   tebexPackageId?: boolean
   name?: boolean
+  description?: boolean
+  imageUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tebexPackageId" | "name" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tebexPackageId" | "name" | "description" | "imageUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
 export type ProductInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   releases?: boolean | Prisma.Product$releasesArgs<ExtArgs>
   _count?: boolean | Prisma.ProductCountOutputTypeDefaultArgs<ExtArgs>
@@ -505,6 +565,8 @@ export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     id: string
     tebexPackageId: number
     name: string
+    description: string | null
+    imageUrl: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["product"]>
@@ -934,6 +996,8 @@ export interface ProductFieldRefs {
   readonly id: Prisma.FieldRef<"Product", 'String'>
   readonly tebexPackageId: Prisma.FieldRef<"Product", 'Int'>
   readonly name: Prisma.FieldRef<"Product", 'String'>
+  readonly description: Prisma.FieldRef<"Product", 'String'>
+  readonly imageUrl: Prisma.FieldRef<"Product", 'String'>
   readonly createdAt: Prisma.FieldRef<"Product", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Product", 'DateTime'>
 }

@@ -34,25 +34,37 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
-    const { status } = await req.json();
+    const body = await req.json();
     const session = await getAdminSession();
 
-    if (!["open", "closed"].includes(status)) {
-      return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+    const data: Record<string, unknown> = {};
+    if (body.status) {
+      if (!["open", "closed"].includes(body.status)) {
+        return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+      }
+      data.status = body.status;
+    }
+    if (body.priority) {
+      if (!["low", "medium", "high", "urgent"].includes(body.priority)) {
+        return NextResponse.json({ error: "Invalid priority" }, { status: 400 });
+      }
+      data.priority = body.priority;
     }
 
     const ticket = await prisma.ticket.update({
       where: { id },
-      data: { status },
+      data,
     });
 
     if (session) {
+      const action = body.priority ? "admin.ticket.priority_change" : (body.status === "closed" ? "admin.ticket.close" : "admin.ticket.reopen");
       logActivity({
-        action: status === "closed" ? "admin.ticket.close" : "admin.ticket.reopen",
+        action,
         actor: session.discordId,
         actorType: "admin",
         target: id,
         targetType: "ticket",
+        metadata: data as Record<string, string>,
       });
     }
 

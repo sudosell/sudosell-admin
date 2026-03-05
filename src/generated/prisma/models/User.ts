@@ -37,6 +37,9 @@ export type UserMinAggregateOutputType = {
   verifyTokenExp: Date | null
   resetToken: string | null
   resetTokenExp: Date | null
+  banned: boolean | null
+  banReason: string | null
+  adminNotes: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -54,6 +57,9 @@ export type UserMaxAggregateOutputType = {
   verifyTokenExp: Date | null
   resetToken: string | null
   resetTokenExp: Date | null
+  banned: boolean | null
+  banReason: string | null
+  adminNotes: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -71,6 +77,9 @@ export type UserCountAggregateOutputType = {
   verifyTokenExp: number
   resetToken: number
   resetTokenExp: number
+  banned: number
+  banReason: number
+  adminNotes: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -90,6 +99,9 @@ export type UserMinAggregateInputType = {
   verifyTokenExp?: true
   resetToken?: true
   resetTokenExp?: true
+  banned?: true
+  banReason?: true
+  adminNotes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -107,6 +119,9 @@ export type UserMaxAggregateInputType = {
   verifyTokenExp?: true
   resetToken?: true
   resetTokenExp?: true
+  banned?: true
+  banReason?: true
+  adminNotes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -124,6 +139,9 @@ export type UserCountAggregateInputType = {
   verifyTokenExp?: true
   resetToken?: true
   resetTokenExp?: true
+  banned?: true
+  banReason?: true
+  adminNotes?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -214,6 +232,9 @@ export type UserGroupByOutputType = {
   verifyTokenExp: Date | null
   resetToken: string | null
   resetTokenExp: Date | null
+  banned: boolean
+  banReason: string | null
+  adminNotes: string | null
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -252,6 +273,9 @@ export type UserWhereInput = {
   verifyTokenExp?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   resetToken?: Prisma.StringNullableFilter<"User"> | string | null
   resetTokenExp?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  banned?: Prisma.BoolFilter<"User"> | boolean
+  banReason?: Prisma.StringNullableFilter<"User"> | string | null
+  adminNotes?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   purchases?: Prisma.PurchaseListRelationFilter
@@ -271,6 +295,9 @@ export type UserOrderByWithRelationInput = {
   verifyTokenExp?: Prisma.SortOrderInput | Prisma.SortOrder
   resetToken?: Prisma.SortOrderInput | Prisma.SortOrder
   resetTokenExp?: Prisma.SortOrderInput | Prisma.SortOrder
+  banned?: Prisma.SortOrder
+  banReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  adminNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   purchases?: Prisma.PurchaseOrderByRelationAggregateInput
@@ -293,6 +320,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   verifyTokenExp?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   resetToken?: Prisma.StringNullableFilter<"User"> | string | null
   resetTokenExp?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  banned?: Prisma.BoolFilter<"User"> | boolean
+  banReason?: Prisma.StringNullableFilter<"User"> | string | null
+  adminNotes?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   purchases?: Prisma.PurchaseListRelationFilter
@@ -312,6 +342,9 @@ export type UserOrderByWithAggregationInput = {
   verifyTokenExp?: Prisma.SortOrderInput | Prisma.SortOrder
   resetToken?: Prisma.SortOrderInput | Prisma.SortOrder
   resetTokenExp?: Prisma.SortOrderInput | Prisma.SortOrder
+  banned?: Prisma.SortOrder
+  banReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  adminNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -335,6 +368,9 @@ export type UserScalarWhereWithAggregatesInput = {
   verifyTokenExp?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   resetToken?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   resetTokenExp?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  banned?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  banReason?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  adminNotes?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -352,6 +388,9 @@ export type UserCreateInput = {
   verifyTokenExp?: Date | string | null
   resetToken?: string | null
   resetTokenExp?: Date | string | null
+  banned?: boolean
+  banReason?: string | null
+  adminNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   purchases?: Prisma.PurchaseCreateNestedManyWithoutUserInput
@@ -371,6 +410,9 @@ export type UserUncheckedCreateInput = {
   verifyTokenExp?: Date | string | null
   resetToken?: string | null
   resetTokenExp?: Date | string | null
+  banned?: boolean
+  banReason?: string | null
+  adminNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   purchases?: Prisma.PurchaseUncheckedCreateNestedManyWithoutUserInput
@@ -390,6 +432,9 @@ export type UserUpdateInput = {
   verifyTokenExp?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetTokenExp?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchases?: Prisma.PurchaseUpdateManyWithoutUserNestedInput
@@ -409,6 +454,9 @@ export type UserUncheckedUpdateInput = {
   verifyTokenExp?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetTokenExp?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchases?: Prisma.PurchaseUncheckedUpdateManyWithoutUserNestedInput
@@ -428,6 +476,9 @@ export type UserCreateManyInput = {
   verifyTokenExp?: Date | string | null
   resetToken?: string | null
   resetTokenExp?: Date | string | null
+  banned?: boolean
+  banReason?: string | null
+  adminNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -445,6 +496,9 @@ export type UserUpdateManyMutationInput = {
   verifyTokenExp?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetTokenExp?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -462,6 +516,9 @@ export type UserUncheckedUpdateManyInput = {
   verifyTokenExp?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetTokenExp?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -479,6 +536,9 @@ export type UserCountOrderByAggregateInput = {
   verifyTokenExp?: Prisma.SortOrder
   resetToken?: Prisma.SortOrder
   resetTokenExp?: Prisma.SortOrder
+  banned?: Prisma.SortOrder
+  banReason?: Prisma.SortOrder
+  adminNotes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -496,6 +556,9 @@ export type UserMaxOrderByAggregateInput = {
   verifyTokenExp?: Prisma.SortOrder
   resetToken?: Prisma.SortOrder
   resetTokenExp?: Prisma.SortOrder
+  banned?: Prisma.SortOrder
+  banReason?: Prisma.SortOrder
+  adminNotes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -513,6 +576,9 @@ export type UserMinOrderByAggregateInput = {
   verifyTokenExp?: Prisma.SortOrder
   resetToken?: Prisma.SortOrder
   resetTokenExp?: Prisma.SortOrder
+  banned?: Prisma.SortOrder
+  banReason?: Prisma.SortOrder
+  adminNotes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -583,6 +649,9 @@ export type UserCreateWithoutPurchasesInput = {
   verifyTokenExp?: Date | string | null
   resetToken?: string | null
   resetTokenExp?: Date | string | null
+  banned?: boolean
+  banReason?: string | null
+  adminNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tickets?: Prisma.TicketCreateNestedManyWithoutUserInput
@@ -601,6 +670,9 @@ export type UserUncheckedCreateWithoutPurchasesInput = {
   verifyTokenExp?: Date | string | null
   resetToken?: string | null
   resetTokenExp?: Date | string | null
+  banned?: boolean
+  banReason?: string | null
+  adminNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutUserInput
@@ -635,6 +707,9 @@ export type UserUpdateWithoutPurchasesInput = {
   verifyTokenExp?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetTokenExp?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tickets?: Prisma.TicketUpdateManyWithoutUserNestedInput
@@ -653,6 +728,9 @@ export type UserUncheckedUpdateWithoutPurchasesInput = {
   verifyTokenExp?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetTokenExp?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutUserNestedInput
@@ -671,6 +749,9 @@ export type UserCreateWithoutTicketsInput = {
   verifyTokenExp?: Date | string | null
   resetToken?: string | null
   resetTokenExp?: Date | string | null
+  banned?: boolean
+  banReason?: string | null
+  adminNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   purchases?: Prisma.PurchaseCreateNestedManyWithoutUserInput
@@ -689,6 +770,9 @@ export type UserUncheckedCreateWithoutTicketsInput = {
   verifyTokenExp?: Date | string | null
   resetToken?: string | null
   resetTokenExp?: Date | string | null
+  banned?: boolean
+  banReason?: string | null
+  adminNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   purchases?: Prisma.PurchaseUncheckedCreateNestedManyWithoutUserInput
@@ -723,6 +807,9 @@ export type UserUpdateWithoutTicketsInput = {
   verifyTokenExp?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetTokenExp?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchases?: Prisma.PurchaseUpdateManyWithoutUserNestedInput
@@ -741,6 +828,9 @@ export type UserUncheckedUpdateWithoutTicketsInput = {
   verifyTokenExp?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetTokenExp?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchases?: Prisma.PurchaseUncheckedUpdateManyWithoutUserNestedInput
@@ -799,6 +889,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   verifyTokenExp?: boolean
   resetToken?: boolean
   resetTokenExp?: boolean
+  banned?: boolean
+  banReason?: boolean
+  adminNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   purchases?: boolean | Prisma.User$purchasesArgs<ExtArgs>
@@ -819,6 +912,9 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   verifyTokenExp?: boolean
   resetToken?: boolean
   resetTokenExp?: boolean
+  banned?: boolean
+  banReason?: boolean
+  adminNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -836,6 +932,9 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   verifyTokenExp?: boolean
   resetToken?: boolean
   resetTokenExp?: boolean
+  banned?: boolean
+  banReason?: boolean
+  adminNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -853,11 +952,14 @@ export type UserSelectScalar = {
   verifyTokenExp?: boolean
   resetToken?: boolean
   resetTokenExp?: boolean
+  banned?: boolean
+  banReason?: boolean
+  adminNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "passwordHash" | "image" | "provider" | "providerId" | "emailVerified" | "verifyToken" | "verifyTokenExp" | "resetToken" | "resetTokenExp" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "passwordHash" | "image" | "provider" | "providerId" | "emailVerified" | "verifyToken" | "verifyTokenExp" | "resetToken" | "resetTokenExp" | "banned" | "banReason" | "adminNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   purchases?: boolean | Prisma.User$purchasesArgs<ExtArgs>
   tickets?: boolean | Prisma.User$ticketsArgs<ExtArgs>
@@ -885,6 +987,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     verifyTokenExp: Date | null
     resetToken: string | null
     resetTokenExp: Date | null
+    banned: boolean
+    banReason: string | null
+    adminNotes: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -1324,6 +1429,9 @@ export interface UserFieldRefs {
   readonly verifyTokenExp: Prisma.FieldRef<"User", 'DateTime'>
   readonly resetToken: Prisma.FieldRef<"User", 'String'>
   readonly resetTokenExp: Prisma.FieldRef<"User", 'DateTime'>
+  readonly banned: Prisma.FieldRef<"User", 'Boolean'>
+  readonly banReason: Prisma.FieldRef<"User", 'String'>
+  readonly adminNotes: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }

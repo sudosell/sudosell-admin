@@ -34,16 +34,20 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
-    const { status } = await req.json();
+    const body = await req.json();
+    const { status } = body;
     const session = await getAdminSession();
 
     if (!["pending", "completed", "declined"].includes(status)) {
       return NextResponse.json({ error: "Invalid status" }, { status: 400 });
     }
 
+    const data: Record<string, unknown> = { status };
+    if (typeof body.refundNote === "string") data.refundNote = body.refundNote || null;
+
     const purchase = await prisma.purchase.update({
       where: { id },
-      data: { status },
+      data,
     });
 
     if (session) {

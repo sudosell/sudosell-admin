@@ -58,7 +58,9 @@ export const ModelName = {
   TicketMessage: 'TicketMessage',
   Product: 'Product',
   Release: 'Release',
-  ActivityLog: 'ActivityLog'
+  ActivityLog: 'ActivityLog',
+  AdminNotification: 'AdminNotification',
+  Announcement: 'Announcement'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -90,6 +92,9 @@ export const UserScalarFieldEnum = {
   verifyTokenExp: 'verifyTokenExp',
   resetToken: 'resetToken',
   resetTokenExp: 'resetTokenExp',
+  banned: 'banned',
+  banReason: 'banReason',
+  adminNotes: 'adminNotes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -105,6 +110,7 @@ export const PurchaseScalarFieldEnum = {
   status: 'status',
   totalPrice: 'totalPrice',
   currency: 'currency',
+  refundNote: 'refundNote',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -129,6 +135,8 @@ export const TicketScalarFieldEnum = {
   userId: 'userId',
   subject: 'subject',
   status: 'status',
+  priority: 'priority',
+  tags: 'tags',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -151,6 +159,8 @@ export const ProductScalarFieldEnum = {
   id: 'id',
   tebexPackageId: 'tebexPackageId',
   name: 'name',
+  description: 'description',
+  imageUrl: 'imageUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -184,6 +194,29 @@ export const ActivityLogScalarFieldEnum = {
 } as const
 
 export type ActivityLogScalarFieldEnum = (typeof ActivityLogScalarFieldEnum)[keyof typeof ActivityLogScalarFieldEnum]
+
+
+export const AdminNotificationScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  title: 'title',
+  message: 'message',
+  metadata: 'metadata',
+  read: 'read',
+  createdAt: 'createdAt'
+} as const
+
+export type AdminNotificationScalarFieldEnum = (typeof AdminNotificationScalarFieldEnum)[keyof typeof AdminNotificationScalarFieldEnum]
+
+
+export const AnnouncementScalarFieldEnum = {
+  id: 'id',
+  message: 'message',
+  active: 'active',
+  createdAt: 'createdAt'
+} as const
+
+export type AnnouncementScalarFieldEnum = (typeof AnnouncementScalarFieldEnum)[keyof typeof AnnouncementScalarFieldEnum]
 
 
 export const SortOrder = {

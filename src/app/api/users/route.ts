@@ -26,6 +26,7 @@ export async function GET(req: NextRequest) {
           email: true,
           provider: true,
           emailVerified: true,
+          banned: true,
           createdAt: true,
           _count: { select: { purchases: true, tickets: true } },
         },

@@ -7,8 +7,11 @@ export async function GET(req: NextRequest) {
     const page = Math.max(1, parseInt(searchParams.get("page") ?? "1"));
     const limit = 20;
     const status = searchParams.get("status");
+    const priority = searchParams.get("priority");
 
-    const where = status ? { status } : {};
+    const where: Record<string, unknown> = {};
+    if (status) where.status = status;
+    if (priority) where.priority = priority;
 
     const [tickets, total] = await Promise.all([
       prisma.ticket.findMany({

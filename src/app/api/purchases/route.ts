@@ -7,8 +7,16 @@ export async function GET(req: NextRequest) {
     const page = Math.max(1, parseInt(searchParams.get("page") ?? "1"));
     const limit = 20;
     const status = searchParams.get("status");
+    const after = searchParams.get("after");
+    const before = searchParams.get("before");
 
-    const where = status ? { status } : {};
+    const where: Record<string, unknown> = {};
+    if (status) where.status = status;
+    if (after || before) {
+      where.createdAt = {} as Record<string, Date>;
+      if (after) (where.createdAt as Record<string, Date>).gte = new Date(after);
+      if (before) (where.createdAt as Record<string, Date>).lte = new Date(before);
+    }
 
     const [purchases, total] = await Promise.all([
       prisma.purchase.findMany({

@@ -5,6 +5,7 @@ interface ActivityLog {
   action: string;
   actor: string;
   actorType: string;
+  actorLabel?: string;
   target?: string | null;
   targetType?: string | null;
   createdAt: string;
@@ -23,7 +24,7 @@ export default function ActivityItem({ log }: { log: ActivityLog }) {
           <Badge value={log.actorType} />
         </div>
         <p className="text-xs text-[#9898ac] truncate">
-          {log.actor}
+          {log.actorLabel ?? log.actor}
           {log.target && <> &middot; {log.target}</>}
         </p>
       </div>

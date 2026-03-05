@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { use } from "react";
 import Link from "next/link";
 import Badge from "@/components/Badge";
+import Breadcrumb from "@/components/Breadcrumb";
 import { DetailSkeleton } from "@/components/Skeleton";
 import { useFetch } from "@/lib/hooks";
 import { Send } from "lucide-react";
@@ -19,10 +20,22 @@ interface TicketDetail {
   id: string;
   subject: string;
   status: string;
+  priority: string;
   createdAt: string;
   user: { id: string; name: string; email: string };
   messages: Message[];
 }
+
+const CANNED_RESPONSES = [
+  { label: "Select a canned response...", value: "" },
+  { label: "Greeting", value: "Hi! Thanks for reaching out. Let me look into this for you." },
+  { label: "Need More Info", value: "Could you provide more details about the issue? Screenshots or steps to reproduce would be helpful." },
+  { label: "Working On It", value: "We're currently investigating this issue. I'll update you as soon as we have more information." },
+  { label: "Resolved", value: "This issue has been resolved. Please let us know if you experience any further problems." },
+  { label: "Refund Processing", value: "Your refund request has been processed. Please allow 3-5 business days for the amount to appear in your account." },
+];
+
+const PRIORITIES = ["low", "medium", "high", "urgent"] as const;
 
 export default function TicketDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -62,12 +75,21 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
     if (res.ok) setTicket((t) => t ? { ...t, status: newStatus } : t);
   }, [ticket, id, setTicket]);
 
+  const changePriority = useCallback(async (priority: string) => {
+    const res = await fetch(`/api/tickets/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ priority }),
+    });
+    if (res.ok) setTicket((t) => t ? { ...t, priority } : t);
+  }, [id, setTicket]);
+
   if (loading) return <DetailSkeleton />;
   if (!ticket) return <div className="text-sm text-red-400 animate-in">Ticket not found</div>;
 
   return (
     <div>
-      <Link href="/tickets" className="text-sm text-[#9898ac] hover:text-white transition-colors duration-150 mb-4 inline-block">&larr; Back to Tickets</Link>
+      <Breadcrumb items={[{ label: "Tickets", href: "/tickets" }, { label: ticket.subject }]} />
 
       <div className="rounded-2xl border border-white/[0.06] bg-[#0d0d12]/80 p-6 mb-6 animate-in">
         <div className="flex items-start justify-between mb-2">
@@ -79,7 +101,17 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <Badge value={ticket.priority} />
             <Badge value={ticket.status} />
+            <select
+              value={ticket.priority}
+              onChange={(e) => changePriority(e.target.value)}
+              className="px-2 py-1 rounded-lg text-xs border border-white/[0.06] bg-[#08080d] text-[#9898ac] focus:outline-none focus:border-[#b249f8]/30 transition-colors"
+            >
+              {PRIORITIES.map((p) => (
+                <option key={p} value={p}>{p.charAt(0).toUpperCase() + p.slice(1)}</option>
+              ))}
+            </select>
             <button
               onClick={toggleStatus}
               className="px-3 py-1.5 rounded-lg text-xs font-medium border border-white/[0.06] text-[#9898ac] hover:text-white hover:bg-white/[0.04] transition-all duration-150"
@@ -114,6 +146,14 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
       </div>
 
       <div className="rounded-2xl border border-white/[0.06] bg-[#0d0d12]/80 p-4 animate-in" style={{ animationDelay: "100ms" }}>
+        <select
+          onChange={(e) => { if (e.target.value) setReply(e.target.value); e.target.value = ""; }}
+          className="w-full mb-2 px-3 py-2 rounded-lg border border-white/[0.06] bg-[#08080d] text-sm text-[#9898ac] focus:outline-none focus:border-[#b249f8]/30 transition-colors"
+        >
+          {CANNED_RESPONSES.map((r) => (
+            <option key={r.label} value={r.value}>{r.label}</option>
+          ))}
+        </select>
         <textarea
           value={reply}
           onChange={(e) => setReply(e.target.value)}

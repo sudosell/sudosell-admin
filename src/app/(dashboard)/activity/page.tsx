@@ -25,6 +25,8 @@ export default function ActivityPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [actorType, setActorType] = useState("all");
   const [action, setAction] = useState("");
+  const [after, setAfter] = useState("");
+  const [before, setBefore] = useState("");
   const [loading, setLoading] = useState(true);
   const debouncedAction = useDebounce(action);
 
@@ -33,11 +35,13 @@ export default function ActivityPage() {
     const params = new URLSearchParams({ page: String(page) });
     if (actorType !== "all") params.set("actorType", actorType);
     if (debouncedAction) params.set("action", debouncedAction);
+    if (after) params.set("after", after);
+    if (before) params.set("before", before);
     fetch(`/api/activity?${params}`)
       .then((r) => r.json())
       .then((data) => { setLogs(data.logs); setTotalPages(data.totalPages); })
       .finally(() => setLoading(false));
-  }, [page, actorType, debouncedAction]);
+  }, [page, actorType, debouncedAction, after, before]);
 
   useEffect(() => { fetchLogs(); }, [fetchLogs]);
 
@@ -69,6 +73,14 @@ export default function ActivityPage() {
           onChange={(e) => { setAction(e.target.value); setPage(1); }}
           className="px-3 py-1.5 rounded-lg border border-white/[0.06] bg-[#0d0d12] text-sm text-white placeholder-[#4a4a5a] focus:outline-none focus:border-[#b249f8]/30 transition-colors duration-150"
         />
+
+        <div className="h-4 w-px bg-white/[0.06]" />
+
+        <div className="flex items-center gap-2">
+          <input type="date" value={after} onChange={(e) => { setAfter(e.target.value); setPage(1); }} className="px-2 py-1 rounded-lg border border-white/[0.06] bg-[#0d0d12] text-xs text-[#9898ac] focus:outline-none focus:border-[#b249f8]/30 transition-colors [color-scheme:dark]" />
+          <span className="text-[#4a4a5a] text-xs">to</span>
+          <input type="date" value={before} onChange={(e) => { setBefore(e.target.value); setPage(1); }} className="px-2 py-1 rounded-lg border border-white/[0.06] bg-[#0d0d12] text-xs text-[#9898ac] focus:outline-none focus:border-[#b249f8]/30 transition-colors [color-scheme:dark]" />
+        </div>
       </div>
 
       <div className="rounded-2xl border border-white/[0.06] bg-[#0d0d12]/80 p-5">

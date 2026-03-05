@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { Search, Download } from "lucide-react";
 import Badge from "@/components/Badge";
 import Pagination from "@/components/Pagination";
 import EmptyState from "@/components/EmptyState";
@@ -15,6 +15,7 @@ interface User {
   email: string;
   provider: string;
   emailVerified: boolean;
+  banned: boolean;
   createdAt: string;
   _count: { purchases: number; tickets: number };
 }
@@ -45,7 +46,16 @@ export default function UsersPage() {
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-white mb-6">Users</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-white">Users</h2>
+        <a
+          href="/api/users/export"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium border border-white/[0.06] text-[#9898ac] hover:text-white hover:bg-white/[0.04] transition-all duration-150"
+        >
+          <Download size={14} />
+          Export CSV
+        </a>
+      </div>
 
       <div className="relative mb-4 max-w-sm">
         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4a4a5a]" />
@@ -79,7 +89,10 @@ export default function UsersPage() {
               {data.users.map((u, i) => (
                 <tr key={u.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors duration-100 animate-in" style={{ animationDelay: `${i * 30}ms` }}>
                   <td className="px-4 py-3">
-                    <Link href={`/users/${u.id}`} className="text-white hover:text-[#b249f8] transition-colors duration-150">{u.name}</Link>
+                    <span className="flex items-center gap-2">
+                      <Link href={`/users/${u.id}`} className="text-white hover:text-[#b249f8] transition-colors duration-150">{u.name}</Link>
+                      {u.banned && <Badge value="banned" />}
+                    </span>
                   </td>
                   <td className="px-4 py-3 text-[#9898ac]">{u.email}</td>
                   <td className="px-4 py-3"><Badge value={u.provider} /></td>

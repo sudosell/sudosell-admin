@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-log";
+import { resolveActors } from "@/lib/resolve-actors";
 
 export async function GET(
   _req: NextRequest,
@@ -21,11 +22,13 @@ export async function GET(
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const activity = await prisma.activityLog.findMany({
+    const rawActivity = await prisma.activityLog.findMany({
       where: { actor: id },
       orderBy: { createdAt: "desc" },
       take: 20,
     });
+
+    const activity = await resolveActors(rawActivity);
 
     return NextResponse.json({ user, activity });
   } catch (err) {
@@ -45,12 +48,21 @@ export async function PATCH(
 
     const data: Record<string, unknown> = {};
     if (typeof body.emailVerified === "boolean") data.emailVerified = body.emailVerified;
+    if (typeof body.name === "string" && body.name.trim()) data.name = body.name.trim();
+    if (typeof body.email === "string" && body.email.trim()) data.email = body.email.trim();
+    if (typeof body.banned === "boolean") data.banned = body.banned;
+    if (typeof body.banReason === "string") data.banReason = body.banReason || null;
+    if (typeof body.adminNotes === "string") data.adminNotes = body.adminNotes || null;
+
+    if (Object.keys(data).length === 0) {
+      return NextResponse.json({ error: "No valid fields to update" }, { status: 400 });
+    }
 
     const user = await prisma.user.update({ where: { id }, data });
 
     if (session) {
       logActivity({
-        action: "admin.user.update",
+        action: body.banned !== undefined ? (body.banned ? "admin.user.ban" : "admin.user.unban") : "admin.user.update",
         actor: session.discordId,
         actorType: "admin",
         target: id,
@@ -63,5 +75,32 @@ export async function PATCH(
   } catch (err) {
     console.error("[users/id]", err);
     return NextResponse.json({ error: "Failed to update user" }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    const { id } = await params;
+    const session = await getAdminSession();
+
+    await prisma.user.delete({ where: { id } });
+
+    if (session) {
+      logActivity({
+        action: "admin.user.delete",
+        actor: session.discordId,
+        actorType: "admin",
+        target: id,
+        targetType: "user",
+      });
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("[users/id]", err);
+    return NextResponse.json({ error: "Failed to delete user" }, { status: 500 });
   }
 }

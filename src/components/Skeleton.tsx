@@ -16,6 +16,15 @@ export function CardSkeleton() {
   return <div className="skeleton h-24 rounded-2xl" />;
 }
 
+export function ChartSkeleton() {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div className="skeleton h-[300px] rounded-2xl" />
+      <div className="skeleton h-[300px] rounded-2xl" />
+    </div>
+  );
+}
+
 export function DetailSkeleton() {
   return (
     <div className="space-y-4">

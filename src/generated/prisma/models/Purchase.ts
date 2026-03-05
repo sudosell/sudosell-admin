@@ -42,6 +42,7 @@ export type PurchaseMinAggregateOutputType = {
   status: string | null
   totalPrice: number | null
   currency: string | null
+  refundNote: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -54,6 +55,7 @@ export type PurchaseMaxAggregateOutputType = {
   status: string | null
   totalPrice: number | null
   currency: string | null
+  refundNote: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -66,6 +68,7 @@ export type PurchaseCountAggregateOutputType = {
   status: number
   totalPrice: number
   currency: number
+  refundNote: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -88,6 +91,7 @@ export type PurchaseMinAggregateInputType = {
   status?: true
   totalPrice?: true
   currency?: true
+  refundNote?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -100,6 +104,7 @@ export type PurchaseMaxAggregateInputType = {
   status?: true
   totalPrice?: true
   currency?: true
+  refundNote?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -112,6 +117,7 @@ export type PurchaseCountAggregateInputType = {
   status?: true
   totalPrice?: true
   currency?: true
+  refundNote?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -211,6 +217,7 @@ export type PurchaseGroupByOutputType = {
   status: string
   totalPrice: number
   currency: string
+  refundNote: string | null
   createdAt: Date
   updatedAt: Date
   _count: PurchaseCountAggregateOutputType | null
@@ -246,6 +253,7 @@ export type PurchaseWhereInput = {
   status?: Prisma.StringFilter<"Purchase"> | string
   totalPrice?: Prisma.FloatFilter<"Purchase"> | number
   currency?: Prisma.StringFilter<"Purchase"> | string
+  refundNote?: Prisma.StringNullableFilter<"Purchase"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Purchase"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Purchase"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -260,6 +268,7 @@ export type PurchaseOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  refundNote?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -277,6 +286,7 @@ export type PurchaseWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.StringFilter<"Purchase"> | string
   totalPrice?: Prisma.FloatFilter<"Purchase"> | number
   currency?: Prisma.StringFilter<"Purchase"> | string
+  refundNote?: Prisma.StringNullableFilter<"Purchase"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Purchase"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Purchase"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -291,6 +301,7 @@ export type PurchaseOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  refundNote?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PurchaseCountOrderByAggregateInput
@@ -311,6 +322,7 @@ export type PurchaseScalarWhereWithAggregatesInput = {
   status?: Prisma.StringWithAggregatesFilter<"Purchase"> | string
   totalPrice?: Prisma.FloatWithAggregatesFilter<"Purchase"> | number
   currency?: Prisma.StringWithAggregatesFilter<"Purchase"> | string
+  refundNote?: Prisma.StringNullableWithAggregatesFilter<"Purchase"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Purchase"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Purchase"> | Date | string
 }
@@ -322,6 +334,7 @@ export type PurchaseCreateInput = {
   status?: string
   totalPrice: number
   currency: string
+  refundNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPurchasesInput
@@ -336,6 +349,7 @@ export type PurchaseUncheckedCreateInput = {
   status?: string
   totalPrice: number
   currency: string
+  refundNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.PurchaseItemUncheckedCreateNestedManyWithoutPurchaseInput
@@ -348,6 +362,7 @@ export type PurchaseUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  refundNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPurchasesNestedInput
@@ -362,6 +377,7 @@ export type PurchaseUncheckedUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  refundNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.PurchaseItemUncheckedUpdateManyWithoutPurchaseNestedInput
@@ -375,6 +391,7 @@ export type PurchaseCreateManyInput = {
   status?: string
   totalPrice: number
   currency: string
+  refundNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -386,6 +403,7 @@ export type PurchaseUpdateManyMutationInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  refundNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -398,6 +416,7 @@ export type PurchaseUncheckedUpdateManyInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  refundNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -420,6 +439,7 @@ export type PurchaseCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  refundNote?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -436,6 +456,7 @@ export type PurchaseMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  refundNote?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -448,6 +469,7 @@ export type PurchaseMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  refundNote?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -532,6 +554,7 @@ export type PurchaseCreateWithoutUserInput = {
   status?: string
   totalPrice: number
   currency: string
+  refundNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.PurchaseItemCreateNestedManyWithoutPurchaseInput
@@ -544,6 +567,7 @@ export type PurchaseUncheckedCreateWithoutUserInput = {
   status?: string
   totalPrice: number
   currency: string
+  refundNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.PurchaseItemUncheckedCreateNestedManyWithoutPurchaseInput
@@ -586,6 +610,7 @@ export type PurchaseScalarWhereInput = {
   status?: Prisma.StringFilter<"Purchase"> | string
   totalPrice?: Prisma.FloatFilter<"Purchase"> | number
   currency?: Prisma.StringFilter<"Purchase"> | string
+  refundNote?: Prisma.StringNullableFilter<"Purchase"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Purchase"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Purchase"> | Date | string
 }
@@ -597,6 +622,7 @@ export type PurchaseCreateWithoutItemsInput = {
   status?: string
   totalPrice: number
   currency: string
+  refundNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPurchasesInput
@@ -610,6 +636,7 @@ export type PurchaseUncheckedCreateWithoutItemsInput = {
   status?: string
   totalPrice: number
   currency: string
+  refundNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -637,6 +664,7 @@ export type PurchaseUpdateWithoutItemsInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  refundNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPurchasesNestedInput
@@ -650,6 +678,7 @@ export type PurchaseUncheckedUpdateWithoutItemsInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  refundNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -661,6 +690,7 @@ export type PurchaseCreateManyUserInput = {
   status?: string
   totalPrice: number
   currency: string
+  refundNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -672,6 +702,7 @@ export type PurchaseUpdateWithoutUserInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  refundNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.PurchaseItemUpdateManyWithoutPurchaseNestedInput
@@ -684,6 +715,7 @@ export type PurchaseUncheckedUpdateWithoutUserInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  refundNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.PurchaseItemUncheckedUpdateManyWithoutPurchaseNestedInput
@@ -696,6 +728,7 @@ export type PurchaseUncheckedUpdateManyWithoutUserInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  refundNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -739,6 +772,7 @@ export type PurchaseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   status?: boolean
   totalPrice?: boolean
   currency?: boolean
+  refundNote?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -754,6 +788,7 @@ export type PurchaseSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   status?: boolean
   totalPrice?: boolean
   currency?: boolean
+  refundNote?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -767,6 +802,7 @@ export type PurchaseSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   status?: boolean
   totalPrice?: boolean
   currency?: boolean
+  refundNote?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -780,11 +816,12 @@ export type PurchaseSelectScalar = {
   status?: boolean
   totalPrice?: boolean
   currency?: boolean
+  refundNote?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PurchaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "basketIdent" | "transactionId" | "status" | "totalPrice" | "currency" | "createdAt" | "updatedAt", ExtArgs["result"]["purchase"]>
+export type PurchaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "basketIdent" | "transactionId" | "status" | "totalPrice" | "currency" | "refundNote" | "createdAt" | "updatedAt", ExtArgs["result"]["purchase"]>
 export type PurchaseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   items?: boolean | Prisma.Purchase$itemsArgs<ExtArgs>
@@ -811,6 +848,7 @@ export type $PurchasePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     status: string
     totalPrice: number
     currency: string
+    refundNote: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["purchase"]>
@@ -1245,6 +1283,7 @@ export interface PurchaseFieldRefs {
   readonly status: Prisma.FieldRef<"Purchase", 'String'>
   readonly totalPrice: Prisma.FieldRef<"Purchase", 'Float'>
   readonly currency: Prisma.FieldRef<"Purchase", 'String'>
+  readonly refundNote: Prisma.FieldRef<"Purchase", 'String'>
   readonly createdAt: Prisma.FieldRef<"Purchase", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Purchase", 'DateTime'>
 }

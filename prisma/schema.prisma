@@ -20,6 +20,9 @@ model User {
   verifyTokenExp DateTime?
   resetToken     String?
   resetTokenExp  DateTime?
+  banned        Boolean   @default(false)
+  banReason     String?
+  adminNotes    String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   purchases     Purchase[]
@@ -38,6 +41,7 @@ model Purchase {
   status        String         @default("pending")
   totalPrice    Float
   currency      String
+  refundNote    String?
   items         PurchaseItem[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
@@ -64,6 +68,8 @@ model Ticket {
   user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   subject   String
   status    String          @default("open")
+  priority  String          @default("medium")
+  tags      String?
   messages  TicketMessage[]
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
@@ -86,6 +92,8 @@ model Product {
   id             String    @id @default(cuid())
   tebexPackageId Int       @unique
   name           String
+  description    String?
+  imageUrl       String?
   releases       Release[]
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
@@ -120,4 +128,26 @@ model ActivityLog {
   @@index([action])
   @@index([actor])
   @@index([createdAt])
+}
+
+model AdminNotification {
+  id        String   @id @default(cuid())
+  type      String
+  title     String
+  message   String
+  metadata  Json?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([read])
+  @@index([createdAt])
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  message   String
+  active    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([active])
 }

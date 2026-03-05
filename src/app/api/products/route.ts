@@ -18,7 +18,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, tebexPackageId } = await req.json();
+    const { name, tebexPackageId, description, imageUrl } = await req.json();
     const session = await getAdminSession();
 
     if (!name || !tebexPackageId) {
@@ -26,7 +26,12 @@ export async function POST(req: NextRequest) {
     }
 
     const product = await prisma.product.create({
-      data: { name, tebexPackageId: parseInt(tebexPackageId) },
+      data: {
+        name,
+        tebexPackageId: parseInt(tebexPackageId),
+        ...(description && { description }),
+        ...(imageUrl && { imageUrl }),
+      },
     });
 
     if (session) {

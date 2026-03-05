@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { resolveActors } from "@/lib/resolve-actors";
 
 export async function GET() {
   try {
-    const [users, purchases, openTickets, products, recentActivity] = await Promise.all([
+    const [users, purchases, openTickets, products, rawActivity] = await Promise.all([
       prisma.user.count(),
       prisma.purchase.findMany({ where: { status: "completed" }, select: { totalPrice: true } }),
       prisma.ticket.count({ where: { status: "open" } }),
@@ -15,6 +16,7 @@ export async function GET() {
     ]);
 
     const revenue = purchases.reduce((sum, p) => sum + p.totalPrice, 0);
+    const recentActivity = await resolveActors(rawActivity);
 
     return NextResponse.json({
       users,
