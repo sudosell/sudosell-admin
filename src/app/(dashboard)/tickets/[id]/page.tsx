@@ -6,8 +6,9 @@ import Link from "next/link";
 import Badge from "@/components/Badge";
 import Breadcrumb from "@/components/Breadcrumb";
 import { DetailSkeleton } from "@/components/Skeleton";
-import { Send } from "lucide-react";
+import { Send, Trash2 } from "lucide-react";
 import { usePolling } from "@/lib/hooks";
+import { useRouter } from "next/navigation";
 
 interface Message {
   id: string;
@@ -43,7 +44,9 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
   const [loading, setLoading] = useState(true);
   const [reply, setReply] = useState("");
   const [sending, setSending] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     let active = true;
@@ -148,6 +151,25 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
     if (res.ok) setTicket((t) => t ? { ...t, priority } : t);
   }, [id]);
 
+  const handleDelete = useCallback(async () => {
+    if (!ticket || ticket.status !== "closed") return;
+    if (!confirm("Permanently delete this ticket and all its messages? This cannot be undone.")) return;
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/tickets/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        router.push("/tickets");
+      } else {
+        const data = await res.json();
+        alert(data.error || "Failed to delete ticket");
+      }
+    } catch {
+      alert("Failed to delete ticket");
+    } finally {
+      setDeleting(false);
+    }
+  }, [ticket, id, router]);
+
   if (loading) return <DetailSkeleton />;
   if (!ticket) return <div className="text-sm text-red-400 animate-in">Ticket not found</div>;
 
@@ -182,6 +204,16 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
             >
               {ticket.status === "open" ? "Close" : "Reopen"}
             </button>
+            {ticket.status === "closed" && (
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-red-500/20 text-red-400 hover:bg-red-500/10 disabled:opacity-50 transition-all duration-150"
+              >
+                <Trash2 size={12} />
+                {deleting ? "Deleting..." : "Delete"}
+              </button>
+            )}
           </div>
         </div>
       </div>

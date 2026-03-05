@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-log";
+import { sendTicketTranscriptEmail } from "@/lib/email";
 
 export async function GET(
   _req: NextRequest,
@@ -54,6 +55,10 @@ export async function PATCH(
     const ticket = await prisma.ticket.update({
       where: { id },
       data,
+      include: {
+        user: { select: { name: true, email: true } },
+        messages: { orderBy: { createdAt: "asc" } },
+      },
     });
 
     if (session) {
@@ -68,9 +73,62 @@ export async function PATCH(
       });
     }
 
+    // Send transcript email when closing
+    if (body.status === "closed") {
+      sendTicketTranscriptEmail(
+        ticket.user.email,
+        ticket.user.name,
+        ticket.subject,
+        ticket.messages,
+      ).catch((err) => console.error("[transcript email]", err));
+    }
+
     return NextResponse.json(ticket);
   } catch (err) {
     console.error("[tickets/id]", err);
     return NextResponse.json({ error: "Failed to update ticket" }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    const session = await getAdminSession();
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { id } = await params;
+
+    const ticket = await prisma.ticket.findUnique({
+      where: { id },
+      select: { status: true },
+    });
+
+    if (!ticket) {
+      return NextResponse.json({ error: "Ticket not found" }, { status: 404 });
+    }
+
+    if (ticket.status !== "closed") {
+      return NextResponse.json({ error: "Only closed tickets can be deleted" }, { status: 400 });
+    }
+
+    // Cascade deletes messages automatically
+    await prisma.ticket.delete({ where: { id } });
+
+    logActivity({
+      action: "admin.ticket.delete",
+      actor: session.discordId,
+      actorType: "admin",
+      target: id,
+      targetType: "ticket",
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error("[tickets/id DELETE]", err);
+    return NextResponse.json({ error: "Failed to delete ticket" }, { status: 500 });
   }
 }
