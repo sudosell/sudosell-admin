@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Users, DollarSign, ShoppingCart, MessageSquare, Package, TrendingUp, Repeat, BarChart3 } from "lucide-react";
+import { useState, useCallback } from "react";
+import { Users, DollarSign, ShoppingCart, MessageSquare, Package, TrendingUp, Repeat, BarChart3, RotateCw } from "lucide-react";
 import StatsCard from "@/components/StatsCard";
 import ActivityItem from "@/components/ActivityItem";
 import RevenueChart from "@/components/RevenueChart";
@@ -46,10 +46,46 @@ export default function DashboardPage() {
   const [period, setPeriod] = useState<string>("daily");
   const { data: charts, loading: chartsLoading } = useFetch<ChartData>(`/api/charts?period=${period}`);
   const { data: analytics, loading: analyticsLoading } = useFetch<Analytics>("/api/analytics");
+  const [cacheClearing, setCacheClearing] = useState(false);
+  const [cacheMsg, setCacheMsg] = useState<string | null>(null);
+
+  const clearCache = useCallback(async () => {
+    setCacheClearing(true);
+    setCacheMsg(null);
+    try {
+      const res = await fetch("/api/cache", { method: "POST" });
+      if (res.ok) {
+        setCacheMsg("Cache cleared");
+      } else {
+        const data = await res.json().catch(() => ({ error: "Failed" }));
+        setCacheMsg(data.error ?? "Failed");
+      }
+    } catch {
+      setCacheMsg("Network error");
+    } finally {
+      setCacheClearing(false);
+      setTimeout(() => setCacheMsg(null), 3000);
+    }
+  }, []);
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-white mb-6">Dashboard</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-white">Dashboard</h2>
+        <button
+          onClick={clearCache}
+          disabled={cacheClearing}
+          className="flex items-center gap-2 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-1.5 text-xs font-medium text-[#9898ac] transition-all hover:border-[#b249f8]/30 hover:text-white disabled:opacity-50"
+        >
+          <RotateCw size={13} className={cacheClearing ? "animate-spin" : ""} />
+          {cacheClearing ? "Clearing..." : "Clear Product Cache"}
+        </button>
+      </div>
+      {cacheMsg && (
+        <div className={`mb-4 rounded-lg px-3 py-2 text-xs font-medium ${cacheMsg === "Cache cleared" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-red-500/10 text-red-400 border border-red-500/20"}`}>
+          {cacheMsg}
+        </div>
+      )}
 
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
