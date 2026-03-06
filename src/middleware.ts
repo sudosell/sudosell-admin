@@ -6,7 +6,6 @@ const SECRET = new TextEncoder().encode(process.env.ADMIN_JWT_SECRET ?? "dev-adm
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Allow login page and auth API routes
   if (pathname === "/login" || pathname.startsWith("/api/auth")) {
     return NextResponse.next();
   }

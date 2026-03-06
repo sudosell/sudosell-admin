@@ -73,7 +73,6 @@ export async function PATCH(
       });
     }
 
-    // Send transcript email when closing
     if (body.status === "closed") {
       sendTicketTranscriptEmail(
         ticket.user.email,
@@ -115,7 +114,6 @@ export async function DELETE(
       return NextResponse.json({ error: "Only closed tickets can be deleted" }, { status: 400 });
     }
 
-    // Cascade deletes messages automatically
     await prisma.ticket.delete({ where: { id } });
 
     logActivity({

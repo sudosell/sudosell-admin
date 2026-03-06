@@ -63,15 +63,12 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
   const [editEmail, setEditEmail] = useState("");
   const [editing, setEditing] = useState(false);
 
-  // Admin notes
   const [notes, setNotes] = useState("");
   const [notesSaving, setNotesSaving] = useState(false);
 
-  // Ban modal
   const [showBanModal, setShowBanModal] = useState(false);
   const [banReason, setBanReason] = useState("");
 
-  // Delete modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const startEditing = useCallback(() => {
@@ -140,7 +137,6 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
 
   const { user, activity } = data;
 
-  // Initialize notes on first render
   if (notes === "" && user.adminNotes) setNotes(user.adminNotes);
 
   return (
@@ -188,7 +184,6 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
         )}
       </div>
 
-      {/* Admin Notes */}
       <div className="rounded-2xl border border-white/[0.06] bg-[#0d0d12]/80 p-5 mb-6 animate-in" style={{ animationDelay: "25ms" }}>
         <h3 className="text-sm font-semibold text-white mb-3">Admin Notes</h3>
         <textarea
@@ -240,7 +235,6 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
         </div>
       </div>
 
-      {/* Danger Zone */}
       <div className="rounded-2xl border border-red-500/20 bg-[#0d0d12]/80 p-5 mt-6 animate-in" style={{ animationDelay: "125ms" }}>
         <h3 className="text-sm font-semibold text-red-400 mb-4">Danger Zone</h3>
         <div className="flex gap-3">
@@ -271,7 +265,6 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
         )}
       </div>
 
-      {/* Ban Modal */}
       <Modal open={showBanModal} onClose={() => setShowBanModal(false)} title="Ban User" actions={<><button onClick={() => setShowBanModal(false)} className="px-4 py-2 rounded-lg text-sm text-[#9898ac] hover:text-white transition-colors">Cancel</button><button onClick={handleBan} className="px-4 py-2 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-colors">Ban</button></>}>
         <div className="space-y-3">
           <p>Are you sure you want to ban <strong className="text-white">{user.name}</strong>?</p>
@@ -285,7 +278,6 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
         </div>
       </Modal>
 
-      {/* Delete Modal */}
       <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} title="Delete User" actions={<><button onClick={() => setShowDeleteModal(false)} className="px-4 py-2 rounded-lg text-sm text-[#9898ac] hover:text-white transition-colors">Cancel</button><button onClick={handleDelete} className="px-4 py-2 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-colors">Delete</button></>}>
         <p>Are you sure you want to permanently delete <strong className="text-white">{user.name}</strong>? This will delete all their purchases, tickets, and activity. This action cannot be undone.</p>
       </Modal>

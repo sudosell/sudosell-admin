@@ -16,7 +16,6 @@ export async function PATCH(
     const data: Record<string, unknown> = {};
 
     if (typeof body.active === "boolean") {
-      // If activating, deactivate all others first
       if (body.active) {
         await prisma.announcement.updateMany({ where: { active: true }, data: { active: false } });
       }

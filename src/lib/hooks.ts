@@ -92,7 +92,6 @@ export function usePolling<T>({
         setData(json);
       }
     } catch {
-      // ignore polling errors
     } finally {
       setLoading(false);
     }

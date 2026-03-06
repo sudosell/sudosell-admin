@@ -54,7 +54,6 @@ export async function GET(req: Request) {
 
     const discordUser: DiscordUser = await userRes.json();
 
-    // Whitelist check
     if (!ADMIN_IDS.includes(discordUser.id)) {
       return NextResponse.redirect(`${appUrl}/login?error=unauthorized`);
     }

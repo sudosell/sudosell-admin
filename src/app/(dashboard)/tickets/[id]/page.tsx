@@ -59,7 +59,6 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
     return () => { active = false; };
   }, [id]);
 
-  // Incremental polling for new messages
   const lastRealTimestamp = ticket?.messages
     .filter((m) => !m.id.startsWith("temp-"))
     .at(-1)?.createdAt ?? null;
@@ -104,7 +103,6 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
     const content = reply.trim();
     setSending(true);
 
-    // Optimistic update — show message immediately
     const tempId = `temp-${Date.now()}`;
     setTicket((t) => t ? { ...t, status: "open", messages: [...t.messages, { id: tempId, content, sender: "admin", createdAt: new Date().toISOString() }] } : t);
     setReply("");

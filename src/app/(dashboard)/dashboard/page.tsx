@@ -89,7 +89,6 @@ export default function DashboardPage() {
             />
           )}
 
-          {/* Insights */}
           {analyticsLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               <CardSkeleton /><CardSkeleton />

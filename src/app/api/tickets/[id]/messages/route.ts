@@ -69,7 +69,6 @@ export async function POST(
       },
     });
 
-    // Reopen ticket if it was closed when admin replies
     if (ticket.status === "closed") {
       await prisma.ticket.update({ where: { id }, data: { status: "open" } });
     } else {
@@ -86,7 +85,6 @@ export async function POST(
       });
     }
 
-    // Fire-and-forget email notification
     sendTicketReplyNotification(ticket.user.email, ticket.user.name, ticket.subject, id).catch((err) => console.error("[email]", err));
 
     return NextResponse.json(message, { status: 201 });

@@ -28,7 +28,6 @@ export async function GET() {
       ? Math.round((totalRevenue / totalPurchases) * 100) / 100
       : 0;
 
-    // Revenue by product
     const items = await prisma.purchaseItem.findMany({
       where: { purchase: { status: "completed" } },
       select: { packageId: true, name: true, price: true },
@@ -45,14 +44,12 @@ export async function GET() {
       .map(([packageId, data]) => ({ packageId, ...data, revenue: Math.round(data.revenue * 100) / 100 }))
       .sort((a, b) => b.revenue - a.revenue);
 
-    // Tickets per product — count tickets from users who own each product
     const ticketCounts = await prisma.ticket.groupBy({
       by: ["userId"],
       _count: true,
     });
     const ticketByUser = new Map(ticketCounts.map((t) => [t.userId, t._count]));
 
-    // For each product, find unique owners and sum their tickets
     const purchasesByProduct = await prisma.purchaseItem.findMany({
       where: { purchase: { status: "completed" } },
       select: { packageId: true, name: true, purchase: { select: { userId: true } } },
@@ -75,7 +72,6 @@ export async function GET() {
       .map(([packageId, data]) => ({ packageId, ...data }))
       .sort((a, b) => b.tickets - a.tickets);
 
-    // Top buyers by spend
     const topBuyersMap = new Map<string, { name: string; email: string; total: number }>();
     const usersForBuyers = await prisma.user.findMany({
       where: { id: { in: [...uniqueBuyers] } },

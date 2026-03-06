@@ -94,7 +94,6 @@ export default function ManualPurchasePage() {
         <form onSubmit={handleSubmit} className="rounded-2xl border border-white/[0.06] bg-[#0d0d12]/80 p-6 space-y-4">
           {error && <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">{error}</div>}
 
-          {/* User search */}
           <div>
             <label className="block text-sm text-[#9898ac] mb-1.5">User</label>
             {selectedUser ? (
@@ -124,7 +123,6 @@ export default function ManualPurchasePage() {
             )}
           </div>
 
-          {/* Items */}
           <div>
             <label className="block text-sm text-[#9898ac] mb-1.5">Items</label>
             <div className="space-y-2">

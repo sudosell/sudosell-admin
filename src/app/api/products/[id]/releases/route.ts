@@ -72,7 +72,6 @@ export async function POST(
       });
     }
 
-    // Notify product owners via email & dispatch webhooks
     const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "https://sudosell.com"}/dashboard?tab=assets`;
     try {
       const owners = await prisma.user.findMany({

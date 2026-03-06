@@ -25,7 +25,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 });
     }
 
-    // Deactivate all existing
     await prisma.announcement.updateMany({ where: { active: true }, data: { active: false } });
 
     const announcement = await prisma.announcement.create({
