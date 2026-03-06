@@ -2,7 +2,10 @@ import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
 const COOKIE_NAME = "admin-session";
-const SECRET = new TextEncoder().encode(process.env.ADMIN_JWT_SECRET ?? "dev-admin-secret");
+if (!process.env.ADMIN_JWT_SECRET) {
+  throw new Error("ADMIN_JWT_SECRET environment variable is required");
+}
+const SECRET = new TextEncoder().encode(process.env.ADMIN_JWT_SECRET);
 
 export interface AdminSession {
   discordId: string;

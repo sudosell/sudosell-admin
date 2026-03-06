@@ -19,10 +19,17 @@ const ADMIN_IDS = (process.env.ADMIN_DISCORD_IDS ?? "").split(",").map((s) => s.
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const code = searchParams.get("code");
+  const state = searchParams.get("state");
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3001";
 
   if (!code) {
     return NextResponse.redirect(`${appUrl}/login?error=no_code`);
+  }
+
+  const cookieHeader = req.headers.get("cookie") ?? "";
+  const storedState = cookieHeader.match(/oauth_state=([^;]+)/)?.[1];
+  if (!state || !storedState || state !== storedState) {
+    return NextResponse.redirect(`${appUrl}/login?error=invalid_state`);
   }
 
   try {
@@ -75,7 +82,9 @@ export async function GET(req: Request) {
       metadata: { username: discordUser.global_name ?? discordUser.username },
     });
 
-    return NextResponse.redirect(`${appUrl}/dashboard`);
+    const response = NextResponse.redirect(`${appUrl}/dashboard`);
+    response.cookies.delete("oauth_state");
+    return response;
   } catch (err) {
     console.error("[auth/discord/callback]", err);
     return NextResponse.redirect(`${appUrl}/login?error=failed`);

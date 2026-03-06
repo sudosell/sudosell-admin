@@ -47,7 +47,7 @@ export async function getSignedDownloadUrl(
   const command = new GetObjectCommand({
     Bucket: bucket,
     Key: key,
-    ResponseContentDisposition: `attachment; filename="${fileName}"`,
+    ResponseContentDisposition: `attachment; filename="${fileName.replace(/["\\\r\n]/g, "_")}"`,
   });
   return getSignedUrl(s3, command, { expiresIn });
 }

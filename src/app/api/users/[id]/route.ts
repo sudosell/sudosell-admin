@@ -9,10 +9,16 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const session = await getAdminSession();
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     const { id } = await params;
     const user = await prisma.user.findUnique({
       where: { id },
-      include: {
+      select: {
+        id: true, name: true, email: true, image: true, provider: true,
+        emailVerified: true, banned: true, banReason: true, adminNotes: true,
+        createdAt: true, updatedAt: true,
         purchases: { include: { items: true }, orderBy: { createdAt: "desc" } },
         tickets: { orderBy: { updatedAt: "desc" } },
       },
@@ -42,9 +48,11 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const session = await getAdminSession();
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     const { id } = await params;
     const body = await req.json();
-    const session = await getAdminSession();
 
     const data: Record<string, unknown> = {};
     if (typeof body.emailVerified === "boolean") data.emailVerified = body.emailVerified;
@@ -58,18 +66,24 @@ export async function PATCH(
       return NextResponse.json({ error: "No valid fields to update" }, { status: 400 });
     }
 
-    const user = await prisma.user.update({ where: { id }, data });
+    const user = await prisma.user.update({
+      where: { id },
+      data,
+      select: {
+        id: true, name: true, email: true, image: true, provider: true,
+        emailVerified: true, banned: true, banReason: true, adminNotes: true,
+        createdAt: true, updatedAt: true,
+      },
+    });
 
-    if (session) {
-      logActivity({
-        action: body.banned !== undefined ? (body.banned ? "admin.user.ban" : "admin.user.unban") : "admin.user.update",
-        actor: session.discordId,
-        actorType: "admin",
-        target: id,
-        targetType: "user",
-        metadata: data as Record<string, boolean>,
-      });
-    }
+    logActivity({
+      action: body.banned !== undefined ? (body.banned ? "admin.user.ban" : "admin.user.unban") : "admin.user.update",
+      actor: session.discordId,
+      actorType: "admin",
+      target: id,
+      targetType: "user",
+      metadata: data as Record<string, boolean>,
+    });
 
     return NextResponse.json(user);
   } catch (err) {
@@ -83,20 +97,20 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const { id } = await params;
     const session = await getAdminSession();
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const { id } = await params;
 
     await prisma.user.delete({ where: { id } });
 
-    if (session) {
-      logActivity({
-        action: "admin.user.delete",
-        actor: session.discordId,
-        actorType: "admin",
-        target: id,
-        targetType: "user",
-      });
-    }
+    logActivity({
+      action: "admin.user.delete",
+      actor: session.discordId,
+      actorType: "admin",
+      target: id,
+      targetType: "user",
+    });
 
     return NextResponse.json({ ok: true });
   } catch (err) {

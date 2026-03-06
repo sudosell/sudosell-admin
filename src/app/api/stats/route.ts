@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { resolveActors } from "@/lib/resolve-actors";
+import { getAdminSession } from "@/lib/auth";
 
 export async function GET() {
   try {
+    const session = await getAdminSession();
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const [users, purchases, openTickets, products, rawActivity] = await Promise.all([
       prisma.user.count(),
       prisma.purchase.findMany({ where: { status: "completed" }, select: { totalPrice: true } }),

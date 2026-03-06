@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { getAdminSession } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
   try {
+    const session = await getAdminSession();
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const period = req.nextUrl.searchParams.get("period") ?? "daily";
     const since = new Date();
     since.setDate(since.getDate() - 30);

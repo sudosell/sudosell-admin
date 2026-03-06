@@ -11,6 +11,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const session = await getAdminSession();
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     const { id } = await params;
     const releases = await prisma.release.findMany({
       where: { productId: id },
@@ -28,8 +31,10 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const { id } = await params;
     const session = await getAdminSession();
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const { id } = await params;
 
     const formData = await req.formData();
     const version = formData.get("version") as string;
@@ -46,7 +51,8 @@ export async function POST(
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    const fileKey = `releases/${id}/${version}/${file.name}`;
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+    const fileKey = `releases/${id}/${version}/${safeName}`;
 
     await uploadReleaseFile(fileKey, buffer, file.type || "application/octet-stream");
 
@@ -61,16 +67,14 @@ export async function POST(
       },
     });
 
-    if (session) {
-      logActivity({
-        action: "admin.release.upload",
-        actor: session.discordId,
-        actorType: "admin",
-        target: release.id,
-        targetType: "release",
-        metadata: { productId: id, version, fileName: file.name },
-      });
-    }
+    logActivity({
+      action: "admin.release.upload",
+      actor: session.discordId,
+      actorType: "admin",
+      target: release.id,
+      targetType: "release",
+      metadata: { productId: id, version, fileName: file.name },
+    });
 
     const dashboardUrl = `${process.env.NEXT_PUBLIC_MAIN_URL ?? "https://sudosell.com"}/dashboard?tab=assets`;
     try {

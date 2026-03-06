@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
-const SECRET = new TextEncoder().encode(process.env.ADMIN_JWT_SECRET ?? "dev-admin-secret");
+if (!process.env.ADMIN_JWT_SECRET) {
+  throw new Error("ADMIN_JWT_SECRET environment variable is required");
+}
+const SECRET = new TextEncoder().encode(process.env.ADMIN_JWT_SECRET);
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;

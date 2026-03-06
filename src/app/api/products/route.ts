@@ -5,6 +5,8 @@ import { logActivity } from "@/lib/activity-log";
 
 export async function GET() {
   try {
+    const session = await getAdminSession();
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const products = await prisma.product.findMany({
       include: { _count: { select: { releases: true } } },
       orderBy: { createdAt: "desc" },
@@ -18,8 +20,10 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, tebexPackageId, description, imageUrl } = await req.json();
     const session = await getAdminSession();
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const { name, tebexPackageId, description, imageUrl } = await req.json();
 
     if (!name || !tebexPackageId) {
       return NextResponse.json({ error: "Name and Tebex Package ID are required" }, { status: 400 });
@@ -34,16 +38,14 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    if (session) {
-      logActivity({
-        action: "admin.product.create",
-        actor: session.discordId,
-        actorType: "admin",
-        target: product.id,
-        targetType: "product",
-        metadata: { name, tebexPackageId },
-      });
-    }
+    logActivity({
+      action: "admin.product.create",
+      actor: session.discordId,
+      actorType: "admin",
+      target: product.id,
+      targetType: "product",
+      metadata: { name, tebexPackageId },
+    });
 
     return NextResponse.json(product, { status: 201 });
   } catch (err) {

@@ -8,6 +8,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const session = await getAdminSession();
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     const { id } = await params;
     const purchase = await prisma.purchase.findUnique({
       where: { id },
@@ -33,10 +36,12 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const session = await getAdminSession();
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     const { id } = await params;
     const body = await req.json();
     const { status } = body;
-    const session = await getAdminSession();
 
     if (!["pending", "completed", "declined"].includes(status)) {
       return NextResponse.json({ error: "Invalid status" }, { status: 400 });
@@ -50,16 +55,14 @@ export async function PATCH(
       data,
     });
 
-    if (session) {
-      logActivity({
-        action: "admin.purchase.status_change",
-        actor: session.discordId,
-        actorType: "admin",
-        target: id,
-        targetType: "purchase",
-        metadata: { status },
-      });
-    }
+    logActivity({
+      action: "admin.purchase.status_change",
+      actor: session.discordId,
+      actorType: "admin",
+      target: id,
+      targetType: "purchase",
+      metadata: { status },
+    });
 
     return NextResponse.json(purchase);
   } catch (err) {

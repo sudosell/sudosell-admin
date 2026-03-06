@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { getAdminSession } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
   try {
+    const session = await getAdminSession();
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const unreadOnly = req.nextUrl.searchParams.get("unreadOnly") === "true";
     const where = unreadOnly ? { read: false } : {};
 
@@ -24,6 +27,9 @@ export async function GET(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
+    const session = await getAdminSession();
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     const { ids } = await req.json();
 
     if (ids && Array.isArray(ids)) {
