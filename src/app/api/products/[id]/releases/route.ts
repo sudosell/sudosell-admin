@@ -72,33 +72,43 @@ export async function POST(
       });
     }
 
-    // Fire-and-forget: email product owners & dispatch webhooks
+    // Notify product owners via email & dispatch webhooks
     const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "https://sudosell.com"}/dashboard?tab=assets`;
-    prisma.user.findMany({
-      where: {
-        purchases: {
-          some: {
-            status: "completed",
-            items: { some: { packageId: product.tebexPackageId } },
+    try {
+      const owners = await prisma.user.findMany({
+        where: {
+          purchases: {
+            some: {
+              status: "completed",
+              items: { some: { packageId: product.tebexPackageId } },
+            },
           },
         },
-      },
-      select: { email: true, name: true },
-    }).then((owners) => {
-      for (const owner of owners) {
-        sendNewReleaseEmail(
-          owner.email, owner.name, product.name,
-          version, patchNotes || null, dashboardUrl,
-        ).catch((e) => console.error("[release-email]", e));
-      }
-    }).catch((e) => console.error("[release-email-query]", e));
+        select: { email: true, name: true },
+      });
 
-    dispatchWebhooks(product.tebexPackageId, {
-      event: "release.published",
-      product: { packageId: product.tebexPackageId, name: product.name },
-      release: { version, patchNotes: patchNotes || null, fileName: file.name },
-      timestamp: new Date().toISOString(),
-    }).catch((e) => console.error("[release-webhooks]", e));
+      await Promise.allSettled(
+        owners.map((owner) =>
+          sendNewReleaseEmail(
+            owner.email, owner.name, product.name,
+            version, patchNotes || null, dashboardUrl,
+          ),
+        ),
+      );
+    } catch (e) {
+      console.error("[release-email]", e);
+    }
+
+    try {
+      await dispatchWebhooks(product.tebexPackageId, {
+        event: "release.published",
+        product: { packageId: product.tebexPackageId, name: product.name },
+        release: { version, patchNotes: patchNotes || null, fileName: file.name },
+        timestamp: new Date().toISOString(),
+      });
+    } catch (e) {
+      console.error("[release-webhooks]", e);
+    }
 
     return NextResponse.json(release, { status: 201 });
   } catch (err) {
