@@ -79,12 +79,13 @@ model Ticket {
 }
 
 model TicketMessage {
-  id        String   @id @default(cuid())
-  ticketId  String
-  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
-  content   String
-  sender    String
-  createdAt DateTime @default(now())
+  id          String   @id @default(cuid())
+  ticketId    String
+  ticket      Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  content     String
+  sender      String
+  attachments Json?
+  createdAt   DateTime @default(now())
 
   @@index([ticketId])
   @@index([ticketId, createdAt])

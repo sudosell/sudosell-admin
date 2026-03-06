@@ -150,6 +150,7 @@ export const TicketMessageScalarFieldEnum = {
   ticketId: 'ticketId',
   content: 'content',
   sender: 'sender',
+  attachments: 'attachments',
   createdAt: 'createdAt'
 } as const
 

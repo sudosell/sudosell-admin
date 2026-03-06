@@ -45,6 +45,7 @@ export type TicketMessageCountAggregateOutputType = {
   ticketId: number
   content: number
   sender: number
+  attachments: number
   createdAt: number
   _all: number
 }
@@ -71,6 +72,7 @@ export type TicketMessageCountAggregateInputType = {
   ticketId?: true
   content?: true
   sender?: true
+  attachments?: true
   createdAt?: true
   _all?: true
 }
@@ -152,6 +154,7 @@ export type TicketMessageGroupByOutputType = {
   ticketId: string
   content: string
   sender: string
+  attachments: runtime.JsonValue | null
   createdAt: Date
   _count: TicketMessageCountAggregateOutputType | null
   _min: TicketMessageMinAggregateOutputType | null
@@ -181,6 +184,7 @@ export type TicketMessageWhereInput = {
   ticketId?: Prisma.StringFilter<"TicketMessage"> | string
   content?: Prisma.StringFilter<"TicketMessage"> | string
   sender?: Prisma.StringFilter<"TicketMessage"> | string
+  attachments?: Prisma.JsonNullableFilter<"TicketMessage">
   createdAt?: Prisma.DateTimeFilter<"TicketMessage"> | Date | string
   ticket?: Prisma.XOR<Prisma.TicketScalarRelationFilter, Prisma.TicketWhereInput>
 }
@@ -190,6 +194,7 @@ export type TicketMessageOrderByWithRelationInput = {
   ticketId?: Prisma.SortOrder
   content?: Prisma.SortOrder
   sender?: Prisma.SortOrder
+  attachments?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   ticket?: Prisma.TicketOrderByWithRelationInput
 }
@@ -202,6 +207,7 @@ export type TicketMessageWhereUniqueInput = Prisma.AtLeast<{
   ticketId?: Prisma.StringFilter<"TicketMessage"> | string
   content?: Prisma.StringFilter<"TicketMessage"> | string
   sender?: Prisma.StringFilter<"TicketMessage"> | string
+  attachments?: Prisma.JsonNullableFilter<"TicketMessage">
   createdAt?: Prisma.DateTimeFilter<"TicketMessage"> | Date | string
   ticket?: Prisma.XOR<Prisma.TicketScalarRelationFilter, Prisma.TicketWhereInput>
 }, "id">
@@ -211,6 +217,7 @@ export type TicketMessageOrderByWithAggregationInput = {
   ticketId?: Prisma.SortOrder
   content?: Prisma.SortOrder
   sender?: Prisma.SortOrder
+  attachments?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.TicketMessageCountOrderByAggregateInput
   _max?: Prisma.TicketMessageMaxOrderByAggregateInput
@@ -225,6 +232,7 @@ export type TicketMessageScalarWhereWithAggregatesInput = {
   ticketId?: Prisma.StringWithAggregatesFilter<"TicketMessage"> | string
   content?: Prisma.StringWithAggregatesFilter<"TicketMessage"> | string
   sender?: Prisma.StringWithAggregatesFilter<"TicketMessage"> | string
+  attachments?: Prisma.JsonNullableWithAggregatesFilter<"TicketMessage">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TicketMessage"> | Date | string
 }
 
@@ -232,6 +240,7 @@ export type TicketMessageCreateInput = {
   id?: string
   content: string
   sender: string
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   ticket: Prisma.TicketCreateNestedOneWithoutMessagesInput
 }
@@ -241,6 +250,7 @@ export type TicketMessageUncheckedCreateInput = {
   ticketId: string
   content: string
   sender: string
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -248,6 +258,7 @@ export type TicketMessageUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   sender?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ticket?: Prisma.TicketUpdateOneRequiredWithoutMessagesNestedInput
 }
@@ -257,6 +268,7 @@ export type TicketMessageUncheckedUpdateInput = {
   ticketId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   sender?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -265,6 +277,7 @@ export type TicketMessageCreateManyInput = {
   ticketId: string
   content: string
   sender: string
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -272,6 +285,7 @@ export type TicketMessageUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   sender?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -280,6 +294,7 @@ export type TicketMessageUncheckedUpdateManyInput = {
   ticketId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   sender?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -298,6 +313,7 @@ export type TicketMessageCountOrderByAggregateInput = {
   ticketId?: Prisma.SortOrder
   content?: Prisma.SortOrder
   sender?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -363,6 +379,7 @@ export type TicketMessageCreateWithoutTicketInput = {
   id?: string
   content: string
   sender: string
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -370,6 +387,7 @@ export type TicketMessageUncheckedCreateWithoutTicketInput = {
   id?: string
   content: string
   sender: string
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -407,6 +425,7 @@ export type TicketMessageScalarWhereInput = {
   ticketId?: Prisma.StringFilter<"TicketMessage"> | string
   content?: Prisma.StringFilter<"TicketMessage"> | string
   sender?: Prisma.StringFilter<"TicketMessage"> | string
+  attachments?: Prisma.JsonNullableFilter<"TicketMessage">
   createdAt?: Prisma.DateTimeFilter<"TicketMessage"> | Date | string
 }
 
@@ -414,6 +433,7 @@ export type TicketMessageCreateManyTicketInput = {
   id?: string
   content: string
   sender: string
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -421,6 +441,7 @@ export type TicketMessageUpdateWithoutTicketInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   sender?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -428,6 +449,7 @@ export type TicketMessageUncheckedUpdateWithoutTicketInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   sender?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -435,6 +457,7 @@ export type TicketMessageUncheckedUpdateManyWithoutTicketInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   sender?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -445,6 +468,7 @@ export type TicketMessageSelect<ExtArgs extends runtime.Types.Extensions.Interna
   ticketId?: boolean
   content?: boolean
   sender?: boolean
+  attachments?: boolean
   createdAt?: boolean
   ticket?: boolean | Prisma.TicketDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["ticketMessage"]>
@@ -454,6 +478,7 @@ export type TicketMessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   ticketId?: boolean
   content?: boolean
   sender?: boolean
+  attachments?: boolean
   createdAt?: boolean
   ticket?: boolean | Prisma.TicketDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["ticketMessage"]>
@@ -463,6 +488,7 @@ export type TicketMessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   ticketId?: boolean
   content?: boolean
   sender?: boolean
+  attachments?: boolean
   createdAt?: boolean
   ticket?: boolean | Prisma.TicketDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["ticketMessage"]>
@@ -472,10 +498,11 @@ export type TicketMessageSelectScalar = {
   ticketId?: boolean
   content?: boolean
   sender?: boolean
+  attachments?: boolean
   createdAt?: boolean
 }
 
-export type TicketMessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ticketId" | "content" | "sender" | "createdAt", ExtArgs["result"]["ticketMessage"]>
+export type TicketMessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ticketId" | "content" | "sender" | "attachments" | "createdAt", ExtArgs["result"]["ticketMessage"]>
 export type TicketMessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   ticket?: boolean | Prisma.TicketDefaultArgs<ExtArgs>
 }
@@ -496,6 +523,7 @@ export type $TicketMessagePayload<ExtArgs extends runtime.Types.Extensions.Inter
     ticketId: string
     content: string
     sender: string
+    attachments: runtime.JsonValue | null
     createdAt: Date
   }, ExtArgs["result"]["ticketMessage"]>
   composites: {}
@@ -925,6 +953,7 @@ export interface TicketMessageFieldRefs {
   readonly ticketId: Prisma.FieldRef<"TicketMessage", 'String'>
   readonly content: Prisma.FieldRef<"TicketMessage", 'String'>
   readonly sender: Prisma.FieldRef<"TicketMessage", 'String'>
+  readonly attachments: Prisma.FieldRef<"TicketMessage", 'Json'>
   readonly createdAt: Prisma.FieldRef<"TicketMessage", 'DateTime'>
 }
     
