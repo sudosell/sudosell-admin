@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-log";
+import { sendDiscordError } from "@/lib/discord";
 
 export async function GET() {
   try {
@@ -14,6 +15,7 @@ export async function GET() {
     return NextResponse.json(products);
   } catch (err) {
     console.error("[products]", err);
+    sendDiscordError("products", err);
     return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
   }
 }
@@ -50,6 +52,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(product, { status: 201 });
   } catch (err) {
     console.error("[products]", err);
+    sendDiscordError("products", err);
     return NextResponse.json({ error: "Failed to create product" }, { status: 500 });
   }
 }

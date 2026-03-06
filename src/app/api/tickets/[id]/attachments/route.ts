@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/auth";
 import { getSignedViewUrl } from "@/lib/s3";
+import { sendDiscordError } from "@/lib/discord";
 
 export async function GET(
   req: NextRequest,
@@ -23,6 +24,7 @@ export async function GET(
     return NextResponse.json({ url });
   } catch (err) {
     console.error("[tickets/attachments]", err);
+    sendDiscordError("tickets/attachments", err);
     return NextResponse.json({ error: "Failed" }, { status: 500 });
   }
 }

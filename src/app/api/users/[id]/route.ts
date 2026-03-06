@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-log";
 import { resolveActors } from "@/lib/resolve-actors";
+import { sendDiscordError } from "@/lib/discord";
 
 export async function GET(
   _req: NextRequest,
@@ -39,6 +40,7 @@ export async function GET(
     return NextResponse.json({ user, activity });
   } catch (err) {
     console.error("[users/id]", err);
+    sendDiscordError("users/id", err);
     return NextResponse.json({ error: "Failed to fetch user" }, { status: 500 });
   }
 }
@@ -88,6 +90,7 @@ export async function PATCH(
     return NextResponse.json(user);
   } catch (err) {
     console.error("[users/id]", err);
+    sendDiscordError("users/id", err);
     return NextResponse.json({ error: "Failed to update user" }, { status: 500 });
   }
 }
@@ -115,6 +118,7 @@ export async function DELETE(
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[users/id]", err);
+    sendDiscordError("users/id", err);
     return NextResponse.json({ error: "Failed to delete user" }, { status: 500 });
   }
 }

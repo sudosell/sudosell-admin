@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
+import { sendDiscordError } from "@/lib/discord";
 
 export async function GET(req: NextRequest) {
   try {
@@ -38,6 +39,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ purchases, total, page, totalPages: Math.ceil(total / limit) });
   } catch (err) {
     console.error("[purchases]", err);
+    sendDiscordError("purchases", err);
     return NextResponse.json({ error: "Failed to fetch purchases" }, { status: 500 });
   }
 }

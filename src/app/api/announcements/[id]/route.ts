@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-log";
+import { sendDiscordError } from "@/lib/discord";
 
 export async function PATCH(
   req: NextRequest,
@@ -36,6 +37,7 @@ export async function PATCH(
     return NextResponse.json(announcement);
   } catch (err) {
     console.error("[announcements/id]", err);
+    sendDiscordError("announcements/id", err);
     return NextResponse.json({ error: "Failed to update announcement" }, { status: 500 });
   }
 }
@@ -62,6 +64,7 @@ export async function DELETE(
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[announcements/id]", err);
+    sendDiscordError("announcements/id", err);
     return NextResponse.json({ error: "Failed to delete announcement" }, { status: 500 });
   }
 }

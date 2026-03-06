@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { resolveActors } from "@/lib/resolve-actors";
 import { getAdminSession } from "@/lib/auth";
+import { sendDiscordError } from "@/lib/discord";
 
 export async function GET() {
   try {
@@ -31,6 +32,7 @@ export async function GET() {
     });
   } catch (err) {
     console.error("[stats]", err);
+    sendDiscordError("stats", err);
     return NextResponse.json({ error: "Failed to fetch stats" }, { status: 500 });
   }
 }

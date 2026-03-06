@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
+import { sendDiscordError } from "@/lib/discord";
 
 export async function GET(req: NextRequest) {
   try {
@@ -75,6 +76,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ revenueData, userGrowth, topProducts, period });
   } catch (err) {
     console.error("[charts]", err);
+    sendDiscordError("charts", err);
     return NextResponse.json({ error: "Failed to fetch chart data" }, { status: 500 });
   }
 }

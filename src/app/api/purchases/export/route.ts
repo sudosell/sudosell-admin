@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
+import { sendDiscordError } from "@/lib/discord";
 
 export async function GET() {
   try {
@@ -38,6 +39,7 @@ export async function GET() {
     });
   } catch (err) {
     console.error("[purchases/export]", err);
+    sendDiscordError("purchases/export", err);
     return NextResponse.json({ error: "Failed to export purchases" }, { status: 500 });
   }
 }

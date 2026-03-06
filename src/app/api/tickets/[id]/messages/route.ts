@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-log";
 import { sendTicketReplyNotification } from "@/lib/email";
+import { sendDiscordError } from "@/lib/discord";
 
 export async function GET(
   req: NextRequest,
@@ -39,6 +40,7 @@ export async function GET(
     });
   } catch (err) {
     console.error("[tickets/id/messages GET]", err);
+    sendDiscordError("tickets/id/messages GET", err);
     return NextResponse.json({ error: "Failed to fetch messages" }, { status: 500 });
   }
 }
@@ -93,6 +95,7 @@ export async function POST(
     return NextResponse.json(message, { status: 201 });
   } catch (err) {
     console.error("[tickets/id/messages]", err);
+    sendDiscordError("tickets/id/messages", err);
     return NextResponse.json({ error: "Failed to send message" }, { status: 500 });
   }
 }

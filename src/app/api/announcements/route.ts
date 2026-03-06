@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-log";
+import { sendDiscordError } from "@/lib/discord";
 
 export async function GET() {
   try {
@@ -11,6 +12,7 @@ export async function GET() {
     return NextResponse.json(announcements);
   } catch (err) {
     console.error("[announcements]", err);
+    sendDiscordError("announcements", err);
     return NextResponse.json({ error: "Failed to fetch announcements" }, { status: 500 });
   }
 }
@@ -42,6 +44,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(announcement, { status: 201 });
   } catch (err) {
     console.error("[announcements]", err);
+    sendDiscordError("announcements", err);
     return NextResponse.json({ error: "Failed to create announcement" }, { status: 500 });
   }
 }

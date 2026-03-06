@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-log";
+import { sendDiscordError } from "@/lib/discord";
 
 export async function GET(
   _req: NextRequest,
@@ -21,6 +22,7 @@ export async function GET(
     return NextResponse.json(product);
   } catch (err) {
     console.error("[products/id]", err);
+    sendDiscordError("products/id", err);
     return NextResponse.json({ error: "Failed to fetch product" }, { status: 500 });
   }
 }
@@ -56,6 +58,7 @@ export async function PATCH(
     return NextResponse.json(product);
   } catch (err) {
     console.error("[products/id]", err);
+    sendDiscordError("products/id", err);
     return NextResponse.json({ error: "Failed to update product" }, { status: 500 });
   }
 }
@@ -83,6 +86,7 @@ export async function DELETE(
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[products/id]", err);
+    sendDiscordError("products/id", err);
     return NextResponse.json({ error: "Failed to delete product" }, { status: 500 });
   }
 }

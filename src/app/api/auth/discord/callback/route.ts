@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { setAdminCookie } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-log";
+import { sendDiscordError } from "@/lib/discord";
 
 interface DiscordTokenResponse {
   access_token: string;
@@ -87,6 +88,7 @@ export async function GET(req: Request) {
     return response;
   } catch (err) {
     console.error("[auth/discord/callback]", err);
+    sendDiscordError("auth/discord/callback", err);
     return NextResponse.redirect(`${appUrl}/login?error=failed`);
   }
 }

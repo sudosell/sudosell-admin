@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
+import { sendDiscordError } from "@/lib/discord";
 
 export async function GET(req: NextRequest) {
   try {
@@ -21,6 +22,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ notifications, unreadCount });
   } catch (err) {
     console.error("[notifications]", err);
+    sendDiscordError("notifications", err);
     return NextResponse.json({ error: "Failed to fetch notifications" }, { status: 500 });
   }
 }
@@ -47,6 +49,7 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[notifications]", err);
+    sendDiscordError("notifications", err);
     return NextResponse.json({ error: "Failed to update notifications" }, { status: 500 });
   }
 }

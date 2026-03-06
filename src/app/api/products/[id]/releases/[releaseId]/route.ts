@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-log";
 import { deleteReleaseFile } from "@/lib/s3";
+import { sendDiscordError } from "@/lib/discord";
 
 export async function DELETE(
   _req: NextRequest,
@@ -34,6 +35,7 @@ export async function DELETE(
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[products/id/releases/releaseId]", err);
+    sendDiscordError("products/id/releases/releaseId", err);
     return NextResponse.json({ error: "Failed to delete release" }, { status: 500 });
   }
 }

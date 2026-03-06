@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-log";
+import { sendDiscordError } from "@/lib/discord";
 
 export async function POST(req: NextRequest) {
   try {
@@ -55,6 +56,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(purchase, { status: 201 });
   } catch (err) {
     console.error("[purchases/manual]", err);
+    sendDiscordError("purchases/manual", err);
     return NextResponse.json({ error: "Failed to create manual purchase" }, { status: 500 });
   }
 }

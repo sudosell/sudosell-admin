@@ -4,6 +4,7 @@ import { getAdminSession } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-log";
 import { sendTicketTranscriptEmail } from "@/lib/email";
 import { deleteTicketFiles } from "@/lib/s3";
+import { sendDiscordError } from "@/lib/discord";
 
 export async function GET(
   _req: NextRequest,
@@ -26,6 +27,7 @@ export async function GET(
     return NextResponse.json(ticket);
   } catch (err) {
     console.error("[tickets/id]", err);
+    sendDiscordError("tickets/id", err);
     return NextResponse.json({ error: "Failed to fetch ticket" }, { status: 500 });
   }
 }
@@ -86,6 +88,7 @@ export async function PATCH(
     return NextResponse.json(ticket);
   } catch (err) {
     console.error("[tickets/id]", err);
+    sendDiscordError("tickets/id", err);
     return NextResponse.json({ error: "Failed to update ticket" }, { status: 500 });
   }
 }
@@ -132,6 +135,7 @@ export async function DELETE(
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("[tickets/id DELETE]", err);
+    sendDiscordError("tickets/id DELETE", err);
     return NextResponse.json({ error: "Failed to delete ticket" }, { status: 500 });
   }
 }

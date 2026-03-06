@@ -5,6 +5,7 @@ import { logActivity } from "@/lib/activity-log";
 import { uploadReleaseFile } from "@/lib/s3";
 import { sendNewReleaseEmail } from "@/lib/email";
 import { dispatchWebhooks } from "@/lib/webhooks";
+import { sendDiscordError } from "@/lib/discord";
 
 export async function GET(
   _req: NextRequest,
@@ -22,6 +23,7 @@ export async function GET(
     return NextResponse.json(releases);
   } catch (err) {
     console.error("[products/id/releases]", err);
+    sendDiscordError("products/id/releases", err);
     return NextResponse.json({ error: "Failed to fetch releases" }, { status: 500 });
   }
 }
@@ -100,6 +102,7 @@ export async function POST(
       );
     } catch (e) {
       console.error("[release-email]", e);
+      sendDiscordError("release-email", e);
     }
 
     try {
@@ -111,11 +114,13 @@ export async function POST(
       });
     } catch (e) {
       console.error("[release-webhooks]", e);
+      sendDiscordError("release-webhooks", e);
     }
 
     return NextResponse.json(release, { status: 201 });
   } catch (err) {
     console.error("[products/id/releases]", err);
+    sendDiscordError("products/id/releases", err);
     return NextResponse.json({ error: "Failed to upload release" }, { status: 500 });
   }
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
+import { sendDiscordError } from "@/lib/discord";
 
 export async function GET(req: NextRequest) {
   try {
@@ -54,6 +55,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ results: { users, tickets, purchases, products } });
   } catch (err) {
     console.error("[search]", err);
+    sendDiscordError("search", err);
     return NextResponse.json({ error: "Search failed" }, { status: 500 });
   }
 }

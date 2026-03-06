@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 import { uploadTicketFile } from "@/lib/s3";
 import crypto from "crypto";
+import { sendDiscordError } from "@/lib/discord";
 
 const MAX_SIZE = 25 * 1024 * 1024; // 25MB
 
@@ -56,6 +57,7 @@ export async function POST(
     });
   } catch (err) {
     console.error("[tickets/upload]", err);
+    sendDiscordError("tickets/upload", err);
     return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }
 }

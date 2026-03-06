@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { Prisma } from "@/generated/prisma/client";
 import { resolveActors } from "@/lib/resolve-actors";
 import { getAdminSession } from "@/lib/auth";
+import { sendDiscordError } from "@/lib/discord";
 
 export async function GET(req: NextRequest) {
   try {
@@ -40,6 +41,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ logs, total, page, totalPages: Math.ceil(total / limit) });
   } catch (err) {
     console.error("[activity]", err);
+    sendDiscordError("activity", err);
     return NextResponse.json({ error: "Failed to fetch activity" }, { status: 500 });
   }
 }

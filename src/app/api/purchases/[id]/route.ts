@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-log";
+import { sendDiscordError } from "@/lib/discord";
 
 export async function GET(
   _req: NextRequest,
@@ -27,6 +28,7 @@ export async function GET(
     return NextResponse.json(purchase);
   } catch (err) {
     console.error("[purchases/id]", err);
+    sendDiscordError("purchases/id", err);
     return NextResponse.json({ error: "Failed to fetch purchase" }, { status: 500 });
   }
 }
@@ -67,6 +69,7 @@ export async function PATCH(
     return NextResponse.json(purchase);
   } catch (err) {
     console.error("[purchases/id]", err);
+    sendDiscordError("purchases/id", err);
     return NextResponse.json({ error: "Failed to update purchase" }, { status: 500 });
   }
 }

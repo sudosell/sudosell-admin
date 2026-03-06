@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
+import { sendDiscordError } from "@/lib/discord";
 
 export async function GET() {
   try {
@@ -99,6 +100,7 @@ export async function GET() {
     });
   } catch (err) {
     console.error("[analytics]", err);
+    sendDiscordError("analytics", err);
     return NextResponse.json({ error: "Failed to fetch analytics" }, { status: 500 });
   }
 }
