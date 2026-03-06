@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const s3 = new S3Client({
@@ -50,4 +50,37 @@ export async function getSignedDownloadUrl(
     ResponseContentDisposition: `attachment; filename="${fileName}"`,
   });
   return getSignedUrl(s3, command, { expiresIn });
+}
+
+export async function uploadTicketFile(
+  key: string,
+  body: Buffer | Uint8Array,
+  contentType: string,
+) {
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: bucket,
+      Key: key,
+      Body: body,
+      ContentType: contentType,
+    }),
+  );
+}
+
+export async function getSignedViewUrl(key: string, expiresIn = 900) {
+  const command = new GetObjectCommand({ Bucket: bucket, Key: key });
+  return getSignedUrl(s3, command, { expiresIn });
+}
+
+export async function deleteTicketFiles(ticketId: string) {
+  const prefix = `tickets/${ticketId}/`;
+  const list = await s3.send(
+    new ListObjectsV2Command({ Bucket: bucket, Prefix: prefix }),
+  );
+  if (!list.Contents?.length) return;
+  await Promise.all(
+    list.Contents.map((obj) =>
+      s3.send(new DeleteObjectCommand({ Bucket: bucket, Key: obj.Key! })),
+    ),
+  );
 }

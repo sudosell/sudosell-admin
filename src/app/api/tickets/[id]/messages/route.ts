@@ -49,7 +49,7 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
-    const { content } = await req.json();
+    const { content, attachments } = await req.json();
     const session = await getAdminSession();
 
     if (!content || typeof content !== "string" || content.trim().length < 1) {
@@ -66,6 +66,9 @@ export async function POST(
         ticketId: id,
         content: content.trim(),
         sender: "admin",
+        ...(Array.isArray(attachments) && attachments.length > 0
+          ? { attachments }
+          : {}),
       },
     });
 

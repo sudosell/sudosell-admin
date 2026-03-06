@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-log";
 import { sendTicketTranscriptEmail } from "@/lib/email";
+import { deleteTicketFiles } from "@/lib/s3";
 
 export async function GET(
   _req: NextRequest,
@@ -113,6 +114,10 @@ export async function DELETE(
     if (ticket.status !== "closed") {
       return NextResponse.json({ error: "Only closed tickets can be deleted" }, { status: 400 });
     }
+
+    await deleteTicketFiles(id).catch((err) =>
+      console.error("[ticket/delete-files]", err),
+    );
 
     await prisma.ticket.delete({ where: { id } });
 
