@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const FROM = process.env.SMTP_FROM ?? "SudoSell <noreply@sudosell.com>";
-const SITE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://sudosell.com";
+const SITE_URL = process.env.NEXT_PUBLIC_MAIN_URL ?? "https://sudosell.com";
 
 interface TranscriptMessage {
   sender: string;

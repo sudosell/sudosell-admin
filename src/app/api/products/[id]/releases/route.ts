@@ -72,7 +72,7 @@ export async function POST(
       });
     }
 
-    const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "https://sudosell.com"}/dashboard?tab=assets`;
+    const dashboardUrl = `${process.env.NEXT_PUBLIC_MAIN_URL ?? "https://sudosell.com"}/dashboard?tab=assets`;
     try {
       const owners = await prisma.user.findMany({
         where: {
