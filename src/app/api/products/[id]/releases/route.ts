@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-log";
-import { uploadReleaseFile } from "@/lib/s3";
 import { sendNewReleaseEmail } from "@/lib/email";
 import { dispatchWebhooks } from "@/lib/webhooks";
 import { sendDiscordError } from "@/lib/discord";
@@ -37,14 +36,10 @@ export async function POST(
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const { id } = await params;
+    const { version, patchNotes, fileKey, fileName, fileSize } = await req.json();
 
-    const formData = await req.formData();
-    const version = formData.get("version") as string;
-    const patchNotes = formData.get("patchNotes") as string | null;
-    const file = formData.get("file") as File | null;
-
-    if (!version || !file) {
-      return NextResponse.json({ error: "Version and file are required" }, { status: 400 });
+    if (!version || !fileKey || !fileName) {
+      return NextResponse.json({ error: "version, fileKey, and fileName are required" }, { status: 400 });
     }
 
     const product = await prisma.product.findUnique({ where: { id } });
@@ -52,20 +47,14 @@ export async function POST(
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-    const fileKey = `releases/${id}/${version}/${safeName}`;
-
-    await uploadReleaseFile(fileKey, buffer, file.type || "application/octet-stream");
-
     const release = await prisma.release.create({
       data: {
         productId: id,
         version,
         patchNotes: patchNotes || null,
         fileKey,
-        fileName: file.name,
-        fileSize: buffer.length,
+        fileName,
+        fileSize: fileSize || 0,
       },
     });
 
@@ -75,7 +64,7 @@ export async function POST(
       actorType: "admin",
       target: release.id,
       targetType: "release",
-      metadata: { productId: id, version, fileName: file.name },
+      metadata: { productId: id, version, fileName },
     });
 
     const dashboardUrl = `${process.env.NEXT_PUBLIC_MAIN_URL ?? "https://sudosell.com"}/dashboard?tab=assets`;
@@ -109,7 +98,7 @@ export async function POST(
       await dispatchWebhooks(product.tebexPackageId, {
         event: "release.published",
         product: { packageId: product.tebexPackageId, name: product.name },
-        release: { version, patchNotes: patchNotes || null, fileName: file.name },
+        release: { version, patchNotes: patchNotes || null, fileName },
         timestamp: new Date().toISOString(),
       });
     } catch (e) {

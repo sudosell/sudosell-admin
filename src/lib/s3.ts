@@ -30,6 +30,19 @@ export async function uploadReleaseFile(
   );
 }
 
+export async function getSignedUploadUrl(
+  key: string,
+  contentType: string,
+  expiresIn = 3600,
+) {
+  const command = new PutObjectCommand({
+    Bucket: bucket,
+    Key: key,
+    ContentType: contentType,
+  });
+  return getSignedUrl(s3, command, { expiresIn });
+}
+
 export async function deleteReleaseFile(key: string) {
   await s3.send(
     new DeleteObjectCommand({

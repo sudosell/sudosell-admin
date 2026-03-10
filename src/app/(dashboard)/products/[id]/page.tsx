@@ -44,6 +44,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const [patchNotes, setPatchNotes] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadSpeed, setUploadSpeed] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showDeleteProduct, setShowDeleteProduct] = useState(false);
@@ -82,20 +84,86 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     e.preventDefault();
     if (!file || !version.trim()) return;
     setUploading(true);
-    const formData = new FormData();
-    formData.set("version", version);
-    formData.set("patchNotes", patchNotes);
-    formData.set("file", file);
-    const res = await fetch(`/api/products/${id}/releases`, { method: "POST", body: formData });
-    if (res.ok) {
-      const release = await res.json();
-      setProduct((p) => p ? { ...p, releases: [release, ...p.releases] } : p);
-      setVersion("");
-      setPatchNotes("");
-      setFile(null);
-      if (fileRef.current) fileRef.current.value = "";
+    setUploadProgress(0);
+    setUploadSpeed("");
+
+    try {
+      const presignRes = await fetch(`/api/products/${id}/releases/presign`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          version,
+          fileName: file.name,
+          contentType: file.type || "application/octet-stream",
+        }),
+      });
+
+      if (!presignRes.ok) {
+        setUploading(false);
+        return;
+      }
+
+      const { uploadUrl, fileKey } = await presignRes.json();
+
+      await new Promise<void>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        let startTime = Date.now();
+        let lastLoaded = 0;
+
+        xhr.upload.addEventListener("progress", (ev) => {
+          if (ev.lengthComputable) {
+            const pct = Math.round((ev.loaded / ev.total) * 100);
+            setUploadProgress(pct);
+
+            const now = Date.now();
+            const elapsed = (now - startTime) / 1000;
+            if (elapsed > 0.5) {
+              const bytesPerSec = (ev.loaded - lastLoaded) / ((now - startTime) / 1000);
+              lastLoaded = ev.loaded;
+              startTime = now;
+              if (bytesPerSec > 1048576) setUploadSpeed(`${(bytesPerSec / 1048576).toFixed(1)} MB/s`);
+              else if (bytesPerSec > 1024) setUploadSpeed(`${(bytesPerSec / 1024).toFixed(0)} KB/s`);
+              else setUploadSpeed(`${Math.round(bytesPerSec)} B/s`);
+            }
+          }
+        });
+
+        xhr.onload = () => xhr.status >= 200 && xhr.status < 300 ? resolve() : reject();
+        xhr.onerror = () => reject();
+        xhr.open("PUT", uploadUrl);
+        xhr.setRequestHeader("Content-Type", file.type || "application/octet-stream");
+        xhr.send(file);
+      });
+
+      setUploadProgress(100);
+      setUploadSpeed("Saving...");
+
+      const confirmRes = await fetch(`/api/products/${id}/releases`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          version,
+          patchNotes: patchNotes || null,
+          fileKey,
+          fileName: file.name,
+          fileSize: file.size,
+        }),
+      });
+
+      if (confirmRes.ok) {
+        const release = await confirmRes.json();
+        setProduct((p) => p ? { ...p, releases: [release, ...p.releases] } : p);
+        setVersion("");
+        setPatchNotes("");
+        setFile(null);
+        if (fileRef.current) fileRef.current.value = "";
+      }
+    } catch {
     }
+
     setUploading(false);
+    setUploadProgress(0);
+    setUploadSpeed("");
   }, [file, version, patchNotes, id, setProduct]);
 
   const handleDelete = useCallback(async () => {
@@ -175,7 +243,19 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             <label className="block text-xs text-[#9898ac] mb-1">Patch Notes (optional)</label>
             <textarea value={patchNotes} onChange={(e) => setPatchNotes(e.target.value)} rows={2} className="w-full px-3 py-2 rounded-lg border border-white/[0.06] bg-[#08080d] text-sm text-white resize-none focus:outline-none focus:border-[#b249f8]/30 transition-colors" />
           </div>
-          <button type="submit" disabled={uploading} className="px-4 py-2 rounded-lg text-sm font-medium bg-[#b249f8] text-white hover:bg-[#9333ea] disabled:opacity-50 transition-all duration-150">{uploading ? "Uploading..." : "Upload"}</button>
+          {uploading ? (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-[#9898ac]">Uploading... {uploadProgress}%</span>
+                {uploadSpeed && <span className="text-[#4a4a5a] tabular-nums">{uploadSpeed}</span>}
+              </div>
+              <div className="h-2 rounded-full bg-white/[0.06] overflow-hidden">
+                <div className="h-full rounded-full bg-[#b249f8] transition-all duration-300 ease-out" style={{ width: `${uploadProgress}%` }} />
+              </div>
+            </div>
+          ) : (
+            <button type="submit" className="px-4 py-2 rounded-lg text-sm font-medium bg-[#b249f8] text-white hover:bg-[#9333ea] transition-all duration-150">Upload</button>
+          )}
         </form>
       </div>
 
