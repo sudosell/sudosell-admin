@@ -61,6 +61,7 @@ export const ModelName = {
   ActivityLog: 'ActivityLog',
   AdminNotification: 'AdminNotification',
   Announcement: 'Announcement',
+  Subscriber: 'Subscriber',
   Webhook: 'Webhook'
 } as const
 
@@ -219,6 +220,15 @@ export const AnnouncementScalarFieldEnum = {
 } as const
 
 export type AnnouncementScalarFieldEnum = (typeof AnnouncementScalarFieldEnum)[keyof typeof AnnouncementScalarFieldEnum]
+
+
+export const SubscriberScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  createdAt: 'createdAt'
+} as const
+
+export type SubscriberScalarFieldEnum = (typeof SubscriberScalarFieldEnum)[keyof typeof SubscriberScalarFieldEnum]
 
 
 export const WebhookScalarFieldEnum = {

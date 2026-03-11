@@ -68,6 +68,11 @@ export type AdminNotification = Prisma.AdminNotificationModel
  */
 export type Announcement = Prisma.AnnouncementModel
 /**
+ * Model Subscriber
+ * 
+ */
+export type Subscriber = Prisma.SubscriberModel
+/**
  * Model Webhook
  * 
  */
