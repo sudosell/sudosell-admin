@@ -64,8 +64,8 @@ export default function RevenueChart({ revenueData, userGrowth, topProducts }: P
               </linearGradient>
             </defs>
             <XAxis dataKey="date" tick={{ fill: "#4a4a5a", fontSize: 11 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fill: "#4a4a5a", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
-            <Tooltip {...tooltipStyle} formatter={(v) => [`$${Number(v).toFixed(2)}`, "Revenue"]} />
+            <YAxis tick={{ fill: "#4a4a5a", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => `£${v}`} />
+            <Tooltip {...tooltipStyle} formatter={(v) => [`£${Number(v).toFixed(2)}`, "Revenue"]} />
             <Area type="monotone" dataKey="revenue" stroke="#b249f8" strokeWidth={2} fill="url(#revGrad)" />
           </AreaChart>
         </ResponsiveContainer>
@@ -95,7 +95,7 @@ export default function RevenueChart({ revenueData, userGrowth, topProducts }: P
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-sm text-white truncate">{p.name}</span>
-                    <span className="text-xs text-[#9898ac] tabular-nums ml-3">${p.revenue.toFixed(2)} · {p.count} sales</span>
+                    <span className="text-xs text-[#9898ac] tabular-nums ml-3">£{p.revenue.toFixed(2)} · {p.count} sales</span>
                   </div>
                   <div className="h-1.5 rounded-full bg-white/[0.04]">
                     <div

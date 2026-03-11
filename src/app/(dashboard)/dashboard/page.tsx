@@ -95,7 +95,7 @@ export default function DashboardPage() {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
             <StatsCard label="Total Users" value={stats.users} icon={Users} />
-            <StatsCard label="Revenue" value={`$${stats.revenue}`} icon={DollarSign} />
+            <StatsCard label="Revenue" value={`£${stats.revenue}`} icon={DollarSign} />
             <StatsCard label="Purchases" value={stats.purchases} icon={ShoppingCart} />
             <StatsCard label="Open Tickets" value={stats.openTickets} icon={MessageSquare} />
             <StatsCard label="Products" value={stats.products} icon={Package} />
@@ -138,7 +138,7 @@ export default function DashboardPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <StatsCard label="Repeat Buyer Rate" value={`${analytics.repeatBuyerRate}%`} icon={Repeat} />
-                <StatsCard label="Avg Order Value" value={`$${analytics.averageOrderValue.toFixed(2)}`} icon={TrendingUp} />
+                <StatsCard label="Avg Order Value" value={`£${analytics.averageOrderValue.toFixed(2)}`} icon={TrendingUp} />
               </div>
 
               {analytics.revenueByProduct.length > 0 && (
@@ -156,7 +156,7 @@ export default function DashboardPage() {
                       {analytics.revenueByProduct.map((p) => (
                         <tr key={p.packageId} className="border-t border-white/[0.04]">
                           <td className="py-2 text-white/90">{p.name}</td>
-                          <td className="py-2 text-right text-emerald-400 font-medium">${p.revenue.toFixed(2)}</td>
+                          <td className="py-2 text-right text-emerald-400 font-medium">£{p.revenue.toFixed(2)}</td>
                           <td className="py-2 text-right text-[#9898ac]">{p.count}</td>
                         </tr>
                       ))}
@@ -203,7 +203,7 @@ export default function DashboardPage() {
                         <tr key={i} className="border-t border-white/[0.04]">
                           <td className="py-2 text-white/90">{b.name}</td>
                           <td className="py-2 text-[#9898ac]">{b.email}</td>
-                          <td className="py-2 text-right text-emerald-400 font-medium">${b.total.toFixed(2)}</td>
+                          <td className="py-2 text-right text-emerald-400 font-medium">£{b.total.toFixed(2)}</td>
                         </tr>
                       ))}
                     </tbody>

@@ -105,7 +105,7 @@ export default function PurchasesPage() {
                 <tr key={p.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors duration-100 animate-in" style={{ animationDelay: `${i * 30}ms` }}>
                   <td className="px-4 py-3 text-white">{p.user.name}</td>
                   <td className="px-4 py-3 text-[#9898ac] max-w-xs truncate">{p.items.map((i) => i.name).join(", ")}</td>
-                  <td className="px-4 py-3 text-white tabular-nums">${p.totalPrice.toFixed(2)}</td>
+                  <td className="px-4 py-3 text-white tabular-nums">£{p.totalPrice.toFixed(2)}</td>
                   <td className="px-4 py-3"><Badge value={p.status} /></td>
                   <td className="px-4 py-3">
                     <Link href={`/purchases/${p.id}`} className="text-[#4a4a5a] hover:text-[#b249f8] transition-colors duration-150 tabular-nums">{new Date(p.createdAt).toLocaleDateString()}</Link>

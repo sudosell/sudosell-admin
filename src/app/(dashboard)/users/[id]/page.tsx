@@ -209,7 +209,7 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
                     <span className="text-sm text-white">{p.items.map((i) => i.name).join(", ")}</span>
                     <Badge value={p.status} />
                   </div>
-                  <p className="text-xs text-[#4a4a5a] tabular-nums">${p.totalPrice.toFixed(2)} {p.currency} &middot; {new Date(p.createdAt).toLocaleDateString()}</p>
+                  <p className="text-xs text-[#4a4a5a] tabular-nums">£{p.totalPrice.toFixed(2)} {p.currency} &middot; {new Date(p.createdAt).toLocaleDateString()}</p>
                 </Link>
               ))}
             </div>

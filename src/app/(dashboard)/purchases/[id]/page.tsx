@@ -67,7 +67,7 @@ export default function PurchaseDetailPage({ params }: { params: Promise<{ id: s
           </div>
           <div>
             <span className="text-[#4a4a5a] text-xs">Total</span>
-            <p className="text-white tabular-nums">${purchase.totalPrice.toFixed(2)} {purchase.currency}</p>
+            <p className="text-white tabular-nums">£{purchase.totalPrice.toFixed(2)} {purchase.currency}</p>
           </div>
           <div>
             <span className="text-[#4a4a5a] text-xs">Transaction ID</span>
@@ -91,7 +91,7 @@ export default function PurchaseDetailPage({ params }: { params: Promise<{ id: s
           {purchase.items.map((item) => (
             <div key={item.id} className="flex justify-between p-3 rounded-lg border border-white/[0.04]">
               <span className="text-sm text-white">{item.name}</span>
-              <span className="text-sm text-[#9898ac] tabular-nums">${item.price.toFixed(2)}</span>
+              <span className="text-sm text-[#9898ac] tabular-nums">£{item.price.toFixed(2)}</span>
             </div>
           ))}
         </div>
