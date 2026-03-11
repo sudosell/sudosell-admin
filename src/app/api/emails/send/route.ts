@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
+import { logActivity } from "@/lib/activity-log";
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
@@ -52,6 +53,16 @@ export async function POST(req: NextRequest) {
   if (recipient && recipient !== "all") {
     try {
       await transporter.sendMail({ from: FROM, to: recipient, subject, html });
+
+      logActivity({
+        action: "admin.email.send",
+        actor: session.discordId,
+        actorType: "admin",
+        target: recipient,
+        targetType: "email",
+        metadata: { subject, recipientCount: 1 },
+      });
+
       return new Response(JSON.stringify({ success: true, sent: 1, total: 1 }));
     } catch (err) {
       console.error("Email send error:", err);
@@ -94,6 +105,15 @@ export async function POST(req: NextRequest) {
       controller.enqueue(
         encoder.encode(`data: ${JSON.stringify({ type: "done", sent, failed, total })}\n\n`)
       );
+
+      logActivity({
+        action: "admin.email.broadcast",
+        actor: session.discordId,
+        actorType: "admin",
+        targetType: "email",
+        metadata: { subject, total, sent, failed },
+      });
+
       controller.close();
     },
   });

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
+import { logActivity } from "@/lib/activity-log";
 
 export async function GET() {
   try {
@@ -15,6 +16,14 @@ export async function GET() {
     for (const s of subscribers) {
       rows.push(`${s.email},${s.createdAt.toISOString()}`);
     }
+
+    logActivity({
+      action: "admin.subscriber.export",
+      actor: session.discordId,
+      actorType: "admin",
+      targetType: "subscriber",
+      metadata: { count: subscribers.length },
+    });
 
     return new NextResponse(rows.join("\n"), {
       headers: {

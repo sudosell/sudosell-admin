@@ -7,7 +7,7 @@ interface LogParams {
   actor: string;
   actorType: "user" | "admin" | "system";
   target?: string;
-  targetType?: "user" | "ticket" | "purchase" | "product" | "release" | "announcement";
+  targetType?: "user" | "ticket" | "purchase" | "product" | "release" | "announcement" | "subscriber" | "email";
   metadata?: Prisma.InputJsonValue;
 }
 

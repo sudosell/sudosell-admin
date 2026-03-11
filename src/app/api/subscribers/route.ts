@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
+import { logActivity } from "@/lib/activity-log";
 
 export async function GET(req: NextRequest) {
   try {
@@ -45,7 +46,16 @@ export async function DELETE(req: NextRequest) {
     const { id } = await req.json();
     if (!id) return NextResponse.json({ error: "ID required" }, { status: 400 });
 
+    const subscriber = await prisma.subscriber.findUnique({ where: { id }, select: { email: true } });
     await prisma.subscriber.delete({ where: { id } });
+
+    logActivity({
+      action: "admin.subscriber.delete",
+      actor: session.discordId,
+      actorType: "admin",
+      target: subscriber?.email ?? id,
+      targetType: "subscriber",
+    });
 
     return NextResponse.json({ success: true });
   } catch (err) {
