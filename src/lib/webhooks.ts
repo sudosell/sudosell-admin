@@ -31,11 +31,11 @@ function buildDiscordPayload(payload: Record<string, unknown>) {
 }
 
 export async function dispatchWebhooks(
-  tebexPackageId: number,
+  paddleProductId: string,
   payload: Record<string, unknown>,
 ) {
   const webhooks = await prisma.webhook.findMany({
-    where: { packageId: tebexPackageId, active: true },
+    where: { packageId: paddleProductId, active: true },
   });
 
   await Promise.allSettled(

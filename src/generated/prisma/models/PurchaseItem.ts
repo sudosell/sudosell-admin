@@ -27,19 +27,17 @@ export type AggregatePurchaseItem = {
 }
 
 export type PurchaseItemAvgAggregateOutputType = {
-  packageId: number | null
   price: number | null
 }
 
 export type PurchaseItemSumAggregateOutputType = {
-  packageId: number | null
   price: number | null
 }
 
 export type PurchaseItemMinAggregateOutputType = {
   id: string | null
   purchaseId: string | null
-  packageId: number | null
+  packageId: string | null
   name: string | null
   price: number | null
   image: string | null
@@ -48,7 +46,7 @@ export type PurchaseItemMinAggregateOutputType = {
 export type PurchaseItemMaxAggregateOutputType = {
   id: string | null
   purchaseId: string | null
-  packageId: number | null
+  packageId: string | null
   name: string | null
   price: number | null
   image: string | null
@@ -66,12 +64,10 @@ export type PurchaseItemCountAggregateOutputType = {
 
 
 export type PurchaseItemAvgAggregateInputType = {
-  packageId?: true
   price?: true
 }
 
 export type PurchaseItemSumAggregateInputType = {
-  packageId?: true
   price?: true
 }
 
@@ -192,7 +188,7 @@ export type PurchaseItemGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 export type PurchaseItemGroupByOutputType = {
   id: string
   purchaseId: string
-  packageId: number
+  packageId: string
   name: string
   price: number
   image: string | null
@@ -224,7 +220,7 @@ export type PurchaseItemWhereInput = {
   NOT?: Prisma.PurchaseItemWhereInput | Prisma.PurchaseItemWhereInput[]
   id?: Prisma.StringFilter<"PurchaseItem"> | string
   purchaseId?: Prisma.StringFilter<"PurchaseItem"> | string
-  packageId?: Prisma.IntFilter<"PurchaseItem"> | number
+  packageId?: Prisma.StringFilter<"PurchaseItem"> | string
   name?: Prisma.StringFilter<"PurchaseItem"> | string
   price?: Prisma.FloatFilter<"PurchaseItem"> | number
   image?: Prisma.StringNullableFilter<"PurchaseItem"> | string | null
@@ -247,7 +243,7 @@ export type PurchaseItemWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.PurchaseItemWhereInput[]
   NOT?: Prisma.PurchaseItemWhereInput | Prisma.PurchaseItemWhereInput[]
   purchaseId?: Prisma.StringFilter<"PurchaseItem"> | string
-  packageId?: Prisma.IntFilter<"PurchaseItem"> | number
+  packageId?: Prisma.StringFilter<"PurchaseItem"> | string
   name?: Prisma.StringFilter<"PurchaseItem"> | string
   price?: Prisma.FloatFilter<"PurchaseItem"> | number
   image?: Prisma.StringNullableFilter<"PurchaseItem"> | string | null
@@ -274,7 +270,7 @@ export type PurchaseItemScalarWhereWithAggregatesInput = {
   NOT?: Prisma.PurchaseItemScalarWhereWithAggregatesInput | Prisma.PurchaseItemScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"PurchaseItem"> | string
   purchaseId?: Prisma.StringWithAggregatesFilter<"PurchaseItem"> | string
-  packageId?: Prisma.IntWithAggregatesFilter<"PurchaseItem"> | number
+  packageId?: Prisma.StringWithAggregatesFilter<"PurchaseItem"> | string
   name?: Prisma.StringWithAggregatesFilter<"PurchaseItem"> | string
   price?: Prisma.FloatWithAggregatesFilter<"PurchaseItem"> | number
   image?: Prisma.StringNullableWithAggregatesFilter<"PurchaseItem"> | string | null
@@ -282,7 +278,7 @@ export type PurchaseItemScalarWhereWithAggregatesInput = {
 
 export type PurchaseItemCreateInput = {
   id?: string
-  packageId: number
+  packageId: string
   name: string
   price: number
   image?: string | null
@@ -292,7 +288,7 @@ export type PurchaseItemCreateInput = {
 export type PurchaseItemUncheckedCreateInput = {
   id?: string
   purchaseId: string
-  packageId: number
+  packageId: string
   name: string
   price: number
   image?: string | null
@@ -300,7 +296,7 @@ export type PurchaseItemUncheckedCreateInput = {
 
 export type PurchaseItemUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  packageId?: Prisma.IntFieldUpdateOperationsInput | number
+  packageId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -310,7 +306,7 @@ export type PurchaseItemUpdateInput = {
 export type PurchaseItemUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseId?: Prisma.StringFieldUpdateOperationsInput | string
-  packageId?: Prisma.IntFieldUpdateOperationsInput | number
+  packageId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -319,7 +315,7 @@ export type PurchaseItemUncheckedUpdateInput = {
 export type PurchaseItemCreateManyInput = {
   id?: string
   purchaseId: string
-  packageId: number
+  packageId: string
   name: string
   price: number
   image?: string | null
@@ -327,7 +323,7 @@ export type PurchaseItemCreateManyInput = {
 
 export type PurchaseItemUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  packageId?: Prisma.IntFieldUpdateOperationsInput | number
+  packageId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -336,7 +332,7 @@ export type PurchaseItemUpdateManyMutationInput = {
 export type PurchaseItemUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseId?: Prisma.StringFieldUpdateOperationsInput | string
-  packageId?: Prisma.IntFieldUpdateOperationsInput | number
+  packageId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -362,7 +358,6 @@ export type PurchaseItemCountOrderByAggregateInput = {
 }
 
 export type PurchaseItemAvgOrderByAggregateInput = {
-  packageId?: Prisma.SortOrder
   price?: Prisma.SortOrder
 }
 
@@ -385,7 +380,6 @@ export type PurchaseItemMinOrderByAggregateInput = {
 }
 
 export type PurchaseItemSumOrderByAggregateInput = {
-  packageId?: Prisma.SortOrder
   price?: Prisma.SortOrder
 }
 
@@ -431,17 +425,9 @@ export type PurchaseItemUncheckedUpdateManyWithoutPurchaseNestedInput = {
   deleteMany?: Prisma.PurchaseItemScalarWhereInput | Prisma.PurchaseItemScalarWhereInput[]
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type PurchaseItemCreateWithoutPurchaseInput = {
   id?: string
-  packageId: number
+  packageId: string
   name: string
   price: number
   image?: string | null
@@ -449,7 +435,7 @@ export type PurchaseItemCreateWithoutPurchaseInput = {
 
 export type PurchaseItemUncheckedCreateWithoutPurchaseInput = {
   id?: string
-  packageId: number
+  packageId: string
   name: string
   price: number
   image?: string | null
@@ -487,7 +473,7 @@ export type PurchaseItemScalarWhereInput = {
   NOT?: Prisma.PurchaseItemScalarWhereInput | Prisma.PurchaseItemScalarWhereInput[]
   id?: Prisma.StringFilter<"PurchaseItem"> | string
   purchaseId?: Prisma.StringFilter<"PurchaseItem"> | string
-  packageId?: Prisma.IntFilter<"PurchaseItem"> | number
+  packageId?: Prisma.StringFilter<"PurchaseItem"> | string
   name?: Prisma.StringFilter<"PurchaseItem"> | string
   price?: Prisma.FloatFilter<"PurchaseItem"> | number
   image?: Prisma.StringNullableFilter<"PurchaseItem"> | string | null
@@ -495,7 +481,7 @@ export type PurchaseItemScalarWhereInput = {
 
 export type PurchaseItemCreateManyPurchaseInput = {
   id?: string
-  packageId: number
+  packageId: string
   name: string
   price: number
   image?: string | null
@@ -503,7 +489,7 @@ export type PurchaseItemCreateManyPurchaseInput = {
 
 export type PurchaseItemUpdateWithoutPurchaseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  packageId?: Prisma.IntFieldUpdateOperationsInput | number
+  packageId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -511,7 +497,7 @@ export type PurchaseItemUpdateWithoutPurchaseInput = {
 
 export type PurchaseItemUncheckedUpdateWithoutPurchaseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  packageId?: Prisma.IntFieldUpdateOperationsInput | number
+  packageId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -519,7 +505,7 @@ export type PurchaseItemUncheckedUpdateWithoutPurchaseInput = {
 
 export type PurchaseItemUncheckedUpdateManyWithoutPurchaseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  packageId?: Prisma.IntFieldUpdateOperationsInput | number
+  packageId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -585,7 +571,7 @@ export type $PurchaseItemPayload<ExtArgs extends runtime.Types.Extensions.Intern
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     purchaseId: string
-    packageId: number
+    packageId: string
     name: string
     price: number
     image: string | null
@@ -1015,7 +1001,7 @@ export interface Prisma__PurchaseItemClient<T, Null = never, ExtArgs extends run
 export interface PurchaseItemFieldRefs {
   readonly id: Prisma.FieldRef<"PurchaseItem", 'String'>
   readonly purchaseId: Prisma.FieldRef<"PurchaseItem", 'String'>
-  readonly packageId: Prisma.FieldRef<"PurchaseItem", 'Int'>
+  readonly packageId: Prisma.FieldRef<"PurchaseItem", 'String'>
   readonly name: Prisma.FieldRef<"PurchaseItem", 'String'>
   readonly price: Prisma.FieldRef<"PurchaseItem", 'Float'>
   readonly image: Prisma.FieldRef<"PurchaseItem", 'String'>

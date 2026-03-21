@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { Users, DollarSign, ShoppingCart, MessageSquare, Package, TrendingUp, Repeat, BarChart3, RotateCw } from "lucide-react";
+import { useState, useCallback, useRef } from "react";
+import { Users, DollarSign, ShoppingCart, MessageSquare, Package, TrendingUp, Repeat, BarChart3, RotateCw, AlertTriangle, Trash2 } from "lucide-react";
 import StatsCard from "@/components/StatsCard";
 import ActivityItem from "@/components/ActivityItem";
 import RevenueChart from "@/components/RevenueChart";
@@ -47,6 +47,11 @@ export default function DashboardPage() {
   const { data: charts, loading: chartsLoading } = useFetch<ChartData>(`/api/charts?period=${period}`);
   const { data: analytics, loading: analyticsLoading } = useFetch<Analytics>("/api/analytics");
   const [cacheClearing, setCacheClearing] = useState(false);
+  const [wipeConfirm, setWipeConfirm] = useState("");
+  const [wiping, setWiping] = useState(false);
+  const [wipeResult, setWipeResult] = useState<Record<string, number> | null>(null);
+  const [wipeError, setWipeError] = useState("");
+  const [showWipeModal, setShowWipeModal] = useState(false);
   const [cacheMsg, setCacheMsg] = useState<string | null>(null);
 
   const clearCache = useCallback(async () => {
@@ -222,6 +227,134 @@ export default function DashboardPage() {
             )}
           </div>
         </>
+      )}
+
+      {/* Danger Zone */}
+      <div className="mt-8 rounded-2xl border border-red-500/20 bg-red-500/[0.03] p-5 animate-in">
+        <div className="flex items-start gap-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-500/10">
+            <AlertTriangle size={18} className="text-red-400" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-semibold text-white">Wipe Database</h3>
+            <p className="mt-1 text-xs text-[#9898ac]">
+              Delete all users, purchases, products, tickets, subscribers, and activity logs. Use this before going live to start fresh. This cannot be undone.
+            </p>
+            <button
+              onClick={() => { setShowWipeModal(true); setWipeConfirm(""); setWipeResult(null); setWipeError(""); }}
+              className="mt-3 flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all duration-150"
+            >
+              <Trash2 size={14} />
+              Wipe All Data
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Wipe Modal */}
+      {showWipeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => !wiping && setShowWipeModal(false)}>
+          <div className="mx-4 w-full max-w-md rounded-2xl border border-white/[0.06] bg-[#0d0d12] p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-500/10">
+                <AlertTriangle size={18} className="text-red-400" />
+              </div>
+              <div>
+                <h3 className="text-base font-semibold text-white">Wipe Entire Database</h3>
+                <p className="text-xs text-[#9898ac]">This will permanently delete everything</p>
+              </div>
+            </div>
+
+            {wipeResult ? (
+              <div className="space-y-3">
+                <div className="rounded-xl bg-emerald-500/[0.06] border border-emerald-500/20 p-4">
+                  <p className="text-sm font-medium text-emerald-400 mb-2">Database wiped successfully</p>
+                  <div className="grid grid-cols-2 gap-1 text-xs text-[#9898ac]">
+                    {Object.entries(wipeResult).map(([key, count]) => (
+                      <div key={key} className="flex justify-between">
+                        <span>{key}:</span>
+                        <span className="text-white font-mono">{count}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <button
+                  onClick={() => { setShowWipeModal(false); window.location.reload(); }}
+                  className="w-full py-2.5 rounded-lg text-sm font-medium bg-white/[0.06] text-white hover:bg-white/[0.1] transition-colors"
+                >
+                  Close & Reload
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="rounded-xl bg-red-500/[0.04] border border-red-500/10 p-3">
+                  <p className="text-xs text-red-300 leading-relaxed">
+                    This will delete <strong>all</strong> users, purchases, products, releases, tickets, subscribers, activity logs, and announcements. You will need to re-register your admin account after this.
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-xs text-[#9898ac] mb-1.5">
+                    Type <span className="font-mono text-red-400 font-bold">WIPE ALL DATA</span> to confirm
+                  </label>
+                  <input
+                    type="text"
+                    value={wipeConfirm}
+                    onChange={(e) => setWipeConfirm(e.target.value)}
+                    placeholder="WIPE ALL DATA"
+                    disabled={wiping}
+                    className="w-full px-3 py-2.5 rounded-lg border border-white/[0.06] bg-[#08080d] text-sm text-white placeholder-[#4a4a5a] focus:outline-none focus:border-red-500/30 transition-colors font-mono"
+                  />
+                </div>
+
+                {wipeError && (
+                  <p className="text-xs text-red-400">{wipeError}</p>
+                )}
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={async () => {
+                      if (wipeConfirm !== "WIPE ALL DATA") {
+                        setWipeError("Confirmation text doesn't match");
+                        return;
+                      }
+                      setWiping(true);
+                      setWipeError("");
+                      try {
+                        const res = await fetch("/api/wipe", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ confirm: "WIPE ALL DATA" }),
+                        });
+                        const data = await res.json();
+                        if (!res.ok) {
+                          setWipeError(data.error || "Wipe failed");
+                        } else {
+                          setWipeResult(data.deleted);
+                        }
+                      } catch {
+                        setWipeError("Something went wrong");
+                      } finally {
+                        setWiping(false);
+                      }
+                    }}
+                    disabled={wiping || wipeConfirm !== "WIPE ALL DATA"}
+                    className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
+                  >
+                    {wiping ? "Wiping..." : "Wipe Everything"}
+                  </button>
+                  <button
+                    onClick={() => setShowWipeModal(false)}
+                    disabled={wiping}
+                    className="px-4 py-2.5 rounded-lg text-sm text-[#9898ac] hover:text-white transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );

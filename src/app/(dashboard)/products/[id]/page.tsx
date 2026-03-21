@@ -23,7 +23,7 @@ interface ProductDetail {
   name: string;
   description: string | null;
   imageUrl: string | null;
-  tebexPackageId: number;
+  paddleProductId: string;
   createdAt: string;
   releases: Release[];
 }
@@ -214,7 +214,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
               <div>
                 <h2 className="text-xl font-bold text-white mb-1">{product.name}</h2>
                 {product.description && <p className="text-sm text-[#9898ac] mb-2">{product.description}</p>}
-                <p className="text-sm text-[#9898ac]">Tebex Package ID: <span className="font-mono tabular-nums">{product.tebexPackageId}</span></p>
+                <p className="text-sm text-[#9898ac]">Paddle Product ID: <span className="font-mono tabular-nums">{product.paddleProductId}</span></p>
                 <p className="text-xs text-[#4a4a5a] mt-1">Created {new Date(product.createdAt).toLocaleDateString()}</p>
               </div>
             </div>

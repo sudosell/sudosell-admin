@@ -7,7 +7,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 export default function NewProductPage() {
   const router = useRouter();
   const [name, setName] = useState("");
-  const [tebexPackageId, setTebexPackageId] = useState("");
+  const [paddleProductId, setPaddleProductId] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [error, setError] = useState("");
@@ -21,7 +21,7 @@ export default function NewProductPage() {
     const res = await fetch("/api/products", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, tebexPackageId, description: description || undefined, imageUrl: imageUrl || undefined }),
+      body: JSON.stringify({ name, paddleProductId, description: description || undefined, imageUrl: imageUrl || undefined }),
     });
 
     if (res.ok) {
@@ -32,7 +32,7 @@ export default function NewProductPage() {
       setError(data.error ?? "Failed to create product");
       setSaving(false);
     }
-  }, [name, tebexPackageId, description, imageUrl, router]);
+  }, [name, paddleProductId, description, imageUrl, router]);
 
   return (
     <div>
@@ -52,8 +52,8 @@ export default function NewProductPage() {
           </div>
 
           <div>
-            <label className="block text-sm text-[#9898ac] mb-1.5">Tebex Package ID</label>
-            <input type="number" value={tebexPackageId} onChange={(e) => setTebexPackageId(e.target.value)} required className="w-full px-4 py-2.5 rounded-lg border border-white/[0.06] bg-[#08080d] text-sm text-white placeholder-[#4a4a5a] focus:outline-none focus:border-[#b249f8]/30 transition-colors duration-150" />
+            <label className="block text-sm text-[#9898ac] mb-1.5">Paddle Product ID</label>
+            <input type="text" value={paddleProductId} onChange={(e) => setPaddleProductId(e.target.value)} required className="w-full px-4 py-2.5 rounded-lg border border-white/[0.06] bg-[#08080d] text-sm text-white placeholder-[#4a4a5a] focus:outline-none focus:border-[#b249f8]/30 transition-colors duration-150" />
           </div>
 
           <div>

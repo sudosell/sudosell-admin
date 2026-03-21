@@ -74,7 +74,7 @@ export async function POST(
           purchases: {
             some: {
               status: "completed",
-              items: { some: { packageId: product.tebexPackageId } },
+              items: { some: { packageId: product.paddleProductId } },
             },
           },
         },
@@ -95,9 +95,9 @@ export async function POST(
     }
 
     try {
-      await dispatchWebhooks(product.tebexPackageId, {
+      await dispatchWebhooks(product.paddleProductId, {
         event: "release.published",
-        product: { packageId: product.tebexPackageId, name: product.name },
+        product: { packageId: product.paddleProductId, name: product.name },
         release: { version, patchNotes: patchNotes || null, fileName },
         timestamp: new Date().toISOString(),
       });

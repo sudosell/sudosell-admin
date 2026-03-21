@@ -9,7 +9,7 @@ import { useFetch } from "@/lib/hooks";
 interface Product {
   id: string;
   name: string;
-  tebexPackageId: number;
+  paddleProductId: string;
   createdAt: string;
   _count: { releases: number };
 }
@@ -40,7 +40,7 @@ export default function ProductsPage() {
             <thead>
               <tr className="border-b border-white/[0.06] text-[#9898ac]">
                 <th className="text-left px-4 py-3 font-medium">Name</th>
-                <th className="text-left px-4 py-3 font-medium">Tebex ID</th>
+                <th className="text-left px-4 py-3 font-medium">Paddle ID</th>
                 <th className="text-left px-4 py-3 font-medium">Releases</th>
                 <th className="text-left px-4 py-3 font-medium">Created</th>
               </tr>
@@ -51,7 +51,7 @@ export default function ProductsPage() {
                   <td className="px-4 py-3">
                     <Link href={`/products/${p.id}`} className="text-white hover:text-[#b249f8] transition-colors duration-150">{p.name}</Link>
                   </td>
-                  <td className="px-4 py-3 text-[#9898ac] font-mono tabular-nums">{p.tebexPackageId}</td>
+                  <td className="px-4 py-3 text-[#9898ac] font-mono tabular-nums">{p.paddleProductId}</td>
                   <td className="px-4 py-3 text-[#9898ac] tabular-nums">{p._count.releases}</td>
                   <td className="px-4 py-3 text-[#4a4a5a] tabular-nums">{new Date(p.createdAt).toLocaleDateString()}</td>
                 </tr>

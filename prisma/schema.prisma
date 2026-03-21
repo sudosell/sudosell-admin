@@ -55,7 +55,7 @@ model PurchaseItem {
   id         String   @id @default(cuid())
   purchaseId String
   purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
-  packageId  Int
+  packageId  String
   name       String
   price      Float
   image      String?
@@ -92,16 +92,28 @@ model TicketMessage {
 }
 
 model Product {
-  id             String    @id @default(cuid())
-  tebexPackageId Int       @unique
-  name           String
-  description    String?
-  imageUrl       String?
-  releases       Release[]
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  id                String   @id @default(cuid())
+  paddleProductId   String   @unique
+  paddlePriceId     String?
+  name              String
+  slug              String   @unique
+  shortDescription  String?
+  description       String?
+  heroImage         String?
+  galleryImages     Json?
+  category          String?
+  tags              Json?
+  features          Json?
+  status            String   @default("draft")
+  price             Float?
+  currency          String   @default("USD")
+  releases          Release[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
-  @@index([tebexPackageId])
+  @@index([paddleProductId])
+  @@index([slug])
+  @@index([status])
 }
 
 model Release {

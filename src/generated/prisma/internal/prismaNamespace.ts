@@ -1421,10 +1421,20 @@ export type TicketMessageScalarFieldEnum = (typeof TicketMessageScalarFieldEnum)
 
 export const ProductScalarFieldEnum = {
   id: 'id',
-  tebexPackageId: 'tebexPackageId',
+  paddleProductId: 'paddleProductId',
+  paddlePriceId: 'paddlePriceId',
   name: 'name',
+  slug: 'slug',
+  shortDescription: 'shortDescription',
   description: 'description',
-  imageUrl: 'imageUrl',
+  heroImage: 'heroImage',
+  galleryImages: 'galleryImages',
+  category: 'category',
+  tags: 'tags',
+  features: 'features',
+  status: 'status',
+  price: 'price',
+  currency: 'currency',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1602,20 +1612,6 @@ export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMode
 
 
 /**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-/**
  * Reference to a field of type 'Json'
  */
 export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
@@ -1626,6 +1622,20 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 /**

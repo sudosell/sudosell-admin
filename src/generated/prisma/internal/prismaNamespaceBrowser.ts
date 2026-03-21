@@ -160,10 +160,20 @@ export type TicketMessageScalarFieldEnum = (typeof TicketMessageScalarFieldEnum)
 
 export const ProductScalarFieldEnum = {
   id: 'id',
-  tebexPackageId: 'tebexPackageId',
+  paddleProductId: 'paddleProductId',
+  paddlePriceId: 'paddlePriceId',
   name: 'name',
+  slug: 'slug',
+  shortDescription: 'shortDescription',
   description: 'description',
-  imageUrl: 'imageUrl',
+  heroImage: 'heroImage',
+  galleryImages: 'galleryImages',
+  category: 'category',
+  tags: 'tags',
+  features: 'features',
+  status: 'status',
+  price: 'price',
+  currency: 'currency',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

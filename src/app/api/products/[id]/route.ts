@@ -38,7 +38,7 @@ export async function PATCH(
 
     const data: Record<string, unknown> = {};
     if (body.name) data.name = body.name;
-    if (body.tebexPackageId) data.tebexPackageId = parseInt(body.tebexPackageId);
+    if (body.paddleProductId) data.paddleProductId = body.paddleProductId;
     if (typeof body.description === "string") data.description = body.description || null;
     if (typeof body.imageUrl === "string") data.imageUrl = body.imageUrl || null;
 

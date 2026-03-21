@@ -25,16 +25,16 @@ export async function POST(req: NextRequest) {
     const session = await getAdminSession();
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { name, tebexPackageId, description, imageUrl } = await req.json();
+    const { name, paddleProductId, description, imageUrl } = await req.json();
 
-    if (!name || !tebexPackageId) {
-      return NextResponse.json({ error: "Name and Tebex Package ID are required" }, { status: 400 });
+    if (!name || !paddleProductId) {
+      return NextResponse.json({ error: "Name and Paddle Product ID are required" }, { status: 400 });
     }
 
     const product = await prisma.product.create({
       data: {
         name,
-        tebexPackageId: parseInt(tebexPackageId),
+        paddleProductId,
         ...(description && { description }),
         ...(imageUrl && { imageUrl }),
       },
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
       actorType: "admin",
       target: product.id,
       targetType: "product",
-      metadata: { name, tebexPackageId },
+      metadata: { name, paddleProductId },
     });
 
     return NextResponse.json(product, { status: 201 });
