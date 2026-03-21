@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
         currency: currency || "USD",
         refundNote: note || null,
         items: {
-          create: items.map((i: { packageId: number; name: string; price: number }) => ({
+          create: items.map((i: { packageId: string; name: string; price: number }) => ({
             packageId: i.packageId,
             name: i.name,
             price: i.price,

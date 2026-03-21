@@ -20,24 +20,14 @@ export type WebhookModel = runtime.Types.Result.DefaultSelection<Prisma.$Webhook
 
 export type AggregateWebhook = {
   _count: WebhookCountAggregateOutputType | null
-  _avg: WebhookAvgAggregateOutputType | null
-  _sum: WebhookSumAggregateOutputType | null
   _min: WebhookMinAggregateOutputType | null
   _max: WebhookMaxAggregateOutputType | null
-}
-
-export type WebhookAvgAggregateOutputType = {
-  packageId: number | null
-}
-
-export type WebhookSumAggregateOutputType = {
-  packageId: number | null
 }
 
 export type WebhookMinAggregateOutputType = {
   id: string | null
   userId: string | null
-  packageId: number | null
+  packageId: string | null
   url: string | null
   secret: string | null
   active: boolean | null
@@ -47,7 +37,7 @@ export type WebhookMinAggregateOutputType = {
 export type WebhookMaxAggregateOutputType = {
   id: string | null
   userId: string | null
-  packageId: number | null
+  packageId: string | null
   url: string | null
   secret: string | null
   active: boolean | null
@@ -65,14 +55,6 @@ export type WebhookCountAggregateOutputType = {
   _all: number
 }
 
-
-export type WebhookAvgAggregateInputType = {
-  packageId?: true
-}
-
-export type WebhookSumAggregateInputType = {
-  packageId?: true
-}
 
 export type WebhookMinAggregateInputType = {
   id?: true
@@ -143,18 +125,6 @@ export type WebhookAggregateArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: WebhookAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: WebhookSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: WebhookMinAggregateInputType
@@ -185,8 +155,6 @@ export type WebhookGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   _count?: WebhookCountAggregateInputType | true
-  _avg?: WebhookAvgAggregateInputType
-  _sum?: WebhookSumAggregateInputType
   _min?: WebhookMinAggregateInputType
   _max?: WebhookMaxAggregateInputType
 }
@@ -194,14 +162,12 @@ export type WebhookGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 export type WebhookGroupByOutputType = {
   id: string
   userId: string
-  packageId: number
+  packageId: string
   url: string
   secret: string
   active: boolean
   createdAt: Date
   _count: WebhookCountAggregateOutputType | null
-  _avg: WebhookAvgAggregateOutputType | null
-  _sum: WebhookSumAggregateOutputType | null
   _min: WebhookMinAggregateOutputType | null
   _max: WebhookMaxAggregateOutputType | null
 }
@@ -227,7 +193,7 @@ export type WebhookWhereInput = {
   NOT?: Prisma.WebhookWhereInput | Prisma.WebhookWhereInput[]
   id?: Prisma.StringFilter<"Webhook"> | string
   userId?: Prisma.StringFilter<"Webhook"> | string
-  packageId?: Prisma.IntFilter<"Webhook"> | number
+  packageId?: Prisma.StringFilter<"Webhook"> | string
   url?: Prisma.StringFilter<"Webhook"> | string
   secret?: Prisma.StringFilter<"Webhook"> | string
   active?: Prisma.BoolFilter<"Webhook"> | boolean
@@ -252,7 +218,7 @@ export type WebhookWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.WebhookWhereInput[]
   NOT?: Prisma.WebhookWhereInput | Prisma.WebhookWhereInput[]
   userId?: Prisma.StringFilter<"Webhook"> | string
-  packageId?: Prisma.IntFilter<"Webhook"> | number
+  packageId?: Prisma.StringFilter<"Webhook"> | string
   url?: Prisma.StringFilter<"Webhook"> | string
   secret?: Prisma.StringFilter<"Webhook"> | string
   active?: Prisma.BoolFilter<"Webhook"> | boolean
@@ -269,10 +235,8 @@ export type WebhookOrderByWithAggregationInput = {
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.WebhookCountOrderByAggregateInput
-  _avg?: Prisma.WebhookAvgOrderByAggregateInput
   _max?: Prisma.WebhookMaxOrderByAggregateInput
   _min?: Prisma.WebhookMinOrderByAggregateInput
-  _sum?: Prisma.WebhookSumOrderByAggregateInput
 }
 
 export type WebhookScalarWhereWithAggregatesInput = {
@@ -281,7 +245,7 @@ export type WebhookScalarWhereWithAggregatesInput = {
   NOT?: Prisma.WebhookScalarWhereWithAggregatesInput | Prisma.WebhookScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Webhook"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Webhook"> | string
-  packageId?: Prisma.IntWithAggregatesFilter<"Webhook"> | number
+  packageId?: Prisma.StringWithAggregatesFilter<"Webhook"> | string
   url?: Prisma.StringWithAggregatesFilter<"Webhook"> | string
   secret?: Prisma.StringWithAggregatesFilter<"Webhook"> | string
   active?: Prisma.BoolWithAggregatesFilter<"Webhook"> | boolean
@@ -290,7 +254,7 @@ export type WebhookScalarWhereWithAggregatesInput = {
 
 export type WebhookCreateInput = {
   id?: string
-  packageId: number
+  packageId: string
   url: string
   secret: string
   active?: boolean
@@ -301,7 +265,7 @@ export type WebhookCreateInput = {
 export type WebhookUncheckedCreateInput = {
   id?: string
   userId: string
-  packageId: number
+  packageId: string
   url: string
   secret: string
   active?: boolean
@@ -310,7 +274,7 @@ export type WebhookUncheckedCreateInput = {
 
 export type WebhookUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  packageId?: Prisma.IntFieldUpdateOperationsInput | number
+  packageId?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   secret?: Prisma.StringFieldUpdateOperationsInput | string
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -321,7 +285,7 @@ export type WebhookUpdateInput = {
 export type WebhookUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  packageId?: Prisma.IntFieldUpdateOperationsInput | number
+  packageId?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   secret?: Prisma.StringFieldUpdateOperationsInput | string
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -331,7 +295,7 @@ export type WebhookUncheckedUpdateInput = {
 export type WebhookCreateManyInput = {
   id?: string
   userId: string
-  packageId: number
+  packageId: string
   url: string
   secret: string
   active?: boolean
@@ -340,7 +304,7 @@ export type WebhookCreateManyInput = {
 
 export type WebhookUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  packageId?: Prisma.IntFieldUpdateOperationsInput | number
+  packageId?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   secret?: Prisma.StringFieldUpdateOperationsInput | string
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -350,7 +314,7 @@ export type WebhookUpdateManyMutationInput = {
 export type WebhookUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  packageId?: Prisma.IntFieldUpdateOperationsInput | number
+  packageId?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   secret?: Prisma.StringFieldUpdateOperationsInput | string
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -377,10 +341,6 @@ export type WebhookCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
 }
 
-export type WebhookAvgOrderByAggregateInput = {
-  packageId?: Prisma.SortOrder
-}
-
 export type WebhookMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -399,10 +359,6 @@ export type WebhookMinOrderByAggregateInput = {
   secret?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-}
-
-export type WebhookSumOrderByAggregateInput = {
-  packageId?: Prisma.SortOrder
 }
 
 export type WebhookCreateNestedManyWithoutUserInput = {
@@ -447,17 +403,9 @@ export type WebhookUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.WebhookScalarWhereInput | Prisma.WebhookScalarWhereInput[]
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type WebhookCreateWithoutUserInput = {
   id?: string
-  packageId: number
+  packageId: string
   url: string
   secret: string
   active?: boolean
@@ -466,7 +414,7 @@ export type WebhookCreateWithoutUserInput = {
 
 export type WebhookUncheckedCreateWithoutUserInput = {
   id?: string
-  packageId: number
+  packageId: string
   url: string
   secret: string
   active?: boolean
@@ -505,7 +453,7 @@ export type WebhookScalarWhereInput = {
   NOT?: Prisma.WebhookScalarWhereInput | Prisma.WebhookScalarWhereInput[]
   id?: Prisma.StringFilter<"Webhook"> | string
   userId?: Prisma.StringFilter<"Webhook"> | string
-  packageId?: Prisma.IntFilter<"Webhook"> | number
+  packageId?: Prisma.StringFilter<"Webhook"> | string
   url?: Prisma.StringFilter<"Webhook"> | string
   secret?: Prisma.StringFilter<"Webhook"> | string
   active?: Prisma.BoolFilter<"Webhook"> | boolean
@@ -514,7 +462,7 @@ export type WebhookScalarWhereInput = {
 
 export type WebhookCreateManyUserInput = {
   id?: string
-  packageId: number
+  packageId: string
   url: string
   secret: string
   active?: boolean
@@ -523,7 +471,7 @@ export type WebhookCreateManyUserInput = {
 
 export type WebhookUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  packageId?: Prisma.IntFieldUpdateOperationsInput | number
+  packageId?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   secret?: Prisma.StringFieldUpdateOperationsInput | string
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -532,7 +480,7 @@ export type WebhookUpdateWithoutUserInput = {
 
 export type WebhookUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  packageId?: Prisma.IntFieldUpdateOperationsInput | number
+  packageId?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   secret?: Prisma.StringFieldUpdateOperationsInput | string
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -541,7 +489,7 @@ export type WebhookUncheckedUpdateWithoutUserInput = {
 
 export type WebhookUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  packageId?: Prisma.IntFieldUpdateOperationsInput | number
+  packageId?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   secret?: Prisma.StringFieldUpdateOperationsInput | string
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -612,7 +560,7 @@ export type $WebhookPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     userId: string
-    packageId: number
+    packageId: string
     url: string
     secret: string
     active: boolean
@@ -1043,7 +991,7 @@ export interface Prisma__WebhookClient<T, Null = never, ExtArgs extends runtime.
 export interface WebhookFieldRefs {
   readonly id: Prisma.FieldRef<"Webhook", 'String'>
   readonly userId: Prisma.FieldRef<"Webhook", 'String'>
-  readonly packageId: Prisma.FieldRef<"Webhook", 'Int'>
+  readonly packageId: Prisma.FieldRef<"Webhook", 'String'>
   readonly url: Prisma.FieldRef<"Webhook", 'String'>
   readonly secret: Prisma.FieldRef<"Webhook", 'String'>
   readonly active: Prisma.FieldRef<"Webhook", 'Boolean'>

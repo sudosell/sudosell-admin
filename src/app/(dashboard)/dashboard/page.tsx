@@ -34,8 +34,8 @@ interface ChartData {
 interface Analytics {
   repeatBuyerRate: number;
   averageOrderValue: number;
-  revenueByProduct: Array<{ packageId: number; name: string; revenue: number; count: number }>;
-  ticketsPerProduct: Array<{ packageId: number; name: string; tickets: number }>;
+  revenueByProduct: Array<{ packageId: string; name: string; revenue: number; count: number }>;
+  ticketsPerProduct: Array<{ packageId: string; name: string; tickets: number }>;
   topBuyers: Array<{ name: string; email: string; total: number }>;
 }
 

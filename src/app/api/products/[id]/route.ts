@@ -37,10 +37,31 @@ export async function PATCH(
     const session = await getAdminSession();
 
     const data: Record<string, unknown> = {};
+
     if (body.name) data.name = body.name;
     if (body.paddleProductId) data.paddleProductId = body.paddleProductId;
+    if (typeof body.paddlePriceId === "string") data.paddlePriceId = body.paddlePriceId || null;
+    if (typeof body.slug === "string" && body.slug.trim()) {
+      // Check slug uniqueness (exclude current product)
+      const existing = await prisma.product.findFirst({
+        where: { slug: body.slug.trim(), NOT: { id } },
+      });
+      if (existing) {
+        return NextResponse.json({ error: "A product with this slug already exists" }, { status: 400 });
+      }
+      data.slug = body.slug.trim();
+    }
+    if (typeof body.shortDescription === "string") data.shortDescription = body.shortDescription || null;
     if (typeof body.description === "string") data.description = body.description || null;
-    if (typeof body.imageUrl === "string") data.imageUrl = body.imageUrl || null;
+    if (typeof body.heroImage === "string") data.heroImage = body.heroImage || null;
+    if (body.galleryImages !== undefined) data.galleryImages = body.galleryImages;
+    if (typeof body.category === "string") data.category = body.category || null;
+    if (body.tags !== undefined) data.tags = body.tags;
+    if (body.features !== undefined) data.features = body.features;
+    if (typeof body.status === "string") data.status = body.status;
+    if (typeof body.price === "number") data.price = body.price;
+    if (body.price === null) data.price = null;
+    if (typeof body.currency === "string") data.currency = body.currency;
 
     const product = await prisma.product.update({ where: { id }, data });
 

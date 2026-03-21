@@ -128,7 +128,7 @@ export default function ManualPurchasePage() {
             <div className="space-y-2">
               {items.map((item, i) => (
                 <div key={i} className="flex gap-2">
-                  <input type="number" value={item.packageId} onChange={(e) => updateItem(i, "packageId", e.target.value)} placeholder="Package ID" className="w-24 px-3 py-2 rounded-lg border border-white/[0.06] bg-[#08080d] text-sm text-white placeholder-[#4a4a5a] focus:outline-none focus:border-[#b249f8]/30 transition-colors" />
+                  <input type="text" value={item.packageId} onChange={(e) => updateItem(i, "packageId", e.target.value)} placeholder="Product ID" className="w-32 px-3 py-2 rounded-lg border border-white/[0.06] bg-[#08080d] text-sm text-white placeholder-[#4a4a5a] focus:outline-none focus:border-[#b249f8]/30 transition-colors" />
                   <input type="text" value={item.name} onChange={(e) => updateItem(i, "name", e.target.value)} placeholder="Item name" required className="flex-1 px-3 py-2 rounded-lg border border-white/[0.06] bg-[#08080d] text-sm text-white placeholder-[#4a4a5a] focus:outline-none focus:border-[#b249f8]/30 transition-colors" />
                   <input type="number" step="0.01" value={item.price} onChange={(e) => updateItem(i, "price", e.target.value)} placeholder="Price" required className="w-24 px-3 py-2 rounded-lg border border-white/[0.06] bg-[#08080d] text-sm text-white placeholder-[#4a4a5a] focus:outline-none focus:border-[#b249f8]/30 transition-colors" />
                   {items.length > 1 && (

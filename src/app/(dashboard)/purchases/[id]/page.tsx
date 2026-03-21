@@ -19,7 +19,7 @@ interface PurchaseDetail {
   refundNote: string | null;
   createdAt: string;
   user: { id: string; name: string; email: string };
-  items: Array<{ id: string; name: string; price: number; packageId: number }>;
+  items: Array<{ id: string; name: string; price: number; packageId: string }>;
 }
 
 export default function PurchaseDetailPage({ params }: { params: Promise<{ id: string }> }) {

@@ -20,6 +20,8 @@ const colors: Record<string, string> = {
   google: "bg-blue-500/10 text-blue-400 border-blue-500/20",
   github: "bg-[#4a4a5a]/20 text-white/70 border-white/10",
   discord: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
+  published: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+  draft: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
 };
 
 export default function Badge({ value }: { value: string }) {

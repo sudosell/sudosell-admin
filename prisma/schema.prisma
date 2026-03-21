@@ -179,7 +179,7 @@ model Webhook {
   id        String   @id @default(cuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  packageId Int
+  packageId String
   url       String
   secret    String
   active    Boolean  @default(true)

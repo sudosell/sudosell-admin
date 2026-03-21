@@ -4,6 +4,13 @@ import { getAdminSession } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-log";
 import { sendDiscordError } from "@/lib/discord";
 
+function slugify(name: string) {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 export async function GET() {
   try {
     const session = await getAdminSession();
@@ -25,18 +32,52 @@ export async function POST(req: NextRequest) {
     const session = await getAdminSession();
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { name, paddleProductId, description, imageUrl } = await req.json();
+    const body = await req.json();
+    const {
+      name,
+      paddleProductId,
+      paddlePriceId,
+      slug,
+      shortDescription,
+      description,
+      heroImage,
+      galleryImages,
+      category,
+      tags,
+      features,
+      status,
+      price,
+      currency,
+    } = body;
 
     if (!name || !paddleProductId) {
       return NextResponse.json({ error: "Name and Paddle Product ID are required" }, { status: 400 });
+    }
+
+    const finalSlug = slug?.trim() || slugify(name);
+
+    // Check slug uniqueness
+    const existing = await prisma.product.findUnique({ where: { slug: finalSlug } });
+    if (existing) {
+      return NextResponse.json({ error: "A product with this slug already exists" }, { status: 400 });
     }
 
     const product = await prisma.product.create({
       data: {
         name,
         paddleProductId,
-        ...(description && { description }),
-        ...(imageUrl && { imageUrl }),
+        slug: finalSlug,
+        ...(paddlePriceId && { paddlePriceId }),
+        ...(shortDescription && { shortDescription }),
+        ...(typeof description === "string" && { description }),
+        ...(heroImage && { heroImage }),
+        ...(galleryImages && { galleryImages }),
+        ...(category && { category }),
+        ...(tags && { tags }),
+        ...(features && { features }),
+        ...(status && { status }),
+        ...(typeof price === "number" && { price }),
+        ...(currency && { currency }),
       },
     });
 

@@ -34,7 +34,7 @@ export async function GET() {
       select: { packageId: true, name: true, price: true },
     });
 
-    const productMap = new Map<number, { name: string; revenue: number; count: number }>();
+    const productMap = new Map<string, { name: string; revenue: number; count: number }>();
     for (const item of items) {
       const entry = productMap.get(item.packageId) ?? { name: item.name, revenue: 0, count: 0 };
       entry.revenue += item.price;
@@ -56,8 +56,8 @@ export async function GET() {
       select: { packageId: true, name: true, purchase: { select: { userId: true } } },
     });
 
-    const productTickets = new Map<number, { name: string; tickets: number }>();
-    const productOwners = new Map<number, Set<string>>();
+    const productTickets = new Map<string, { name: string; tickets: number }>();
+    const productOwners = new Map<string, Set<string>>();
     for (const pi of purchasesByProduct) {
       if (!productOwners.has(pi.packageId)) {
         productOwners.set(pi.packageId, new Set());
