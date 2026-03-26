@@ -48,7 +48,9 @@ model Purchase {
   updatedAt     DateTime       @updatedAt
 
   @@index([userId])
+  @@index([userId, status])
   @@index([basketIdent])
+  @@index([transactionId])
 }
 
 model PurchaseItem {
@@ -61,6 +63,7 @@ model PurchaseItem {
   image      String?
 
   @@index([purchaseId])
+  @@index([packageId])
 }
 
 model Ticket {

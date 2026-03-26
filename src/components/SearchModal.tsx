@@ -119,7 +119,7 @@ export default function SearchModal({ open, onClose }: Props) {
                   {results.purchases.map((p) => (
                     <ResultItem key={p.id} onClick={() => navigate(`/purchases/${p.id}`)}>
                       <span className="text-white">{p.user.name}</span>
-                      <span className="text-[#4a4a5a] ml-2">£{p.totalPrice.toFixed(2)}</span>
+                      <span className="text-[#4a4a5a] ml-2">${p.totalPrice.toFixed(2)}</span>
                     </ResultItem>
                   ))}
                 </Section>
